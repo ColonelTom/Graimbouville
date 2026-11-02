@@ -47,15 +47,17 @@
         <h1>Graimbouville</h1>
         <p class="sous-titre">La maison de famille</p>
       </div>
-      <label>Adresse email
-        <input type="email" name="email" autocomplete="username" required>
-      </label>
+      <fieldset class="profils">
+        <legend class="label">Qui êtes-vous ?</legend>
+        <div id="choix-profils" class="profils-grille"></div>
+      </fieldset>
+      <!-- Identifiant caché : aide les téléphones à mémoriser le mot de passe -->
+      <input type="text" name="identifiant" autocomplete="username" hidden>
       <label>Mot de passe
         <input type="password" name="motdepasse" autocomplete="current-password" required>
       </label>
       <p id="erreur-connexion" class="erreur" hidden></p>
       <button type="submit" class="btn primaire large">Se connecter</button>
-      <button type="button" id="btn-oubli" class="btn lien">Mot de passe oublié ?</button>
     </form>
     </div>
   </div>

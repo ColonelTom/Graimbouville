@@ -45,32 +45,37 @@ Sur la page GitHub du projet : bouton vert **Code** → **Download ZIP**, puis d
 1. Allez sur <https://console.firebase.google.com> et connectez-vous avec un compte Google.
 2. **Créer un projet** → nom : `graimbouville` → vous pouvez **désactiver Google Analytics** → **Créer le projet**.
 
-### Étape 3 — Activer la connexion par email et créer les comptes de la famille
+### Étape 3 — Activer la connexion et créer les 5 profils
+
+L'écran de connexion propose 5 profils : **Etienne, Caroline, Fabienne, Amélie, Matthias**. Chacun correspond à un compte Firebase dont l'identifiant est une adresse fictive (aucun email n'y est jamais envoyé).
 
 1. Menu de gauche : **Création** → **Authentication** → **Commencer**.
 2. Onglet **Mode de connexion** → **Adresse e-mail/Mot de passe** → activez le premier interrupteur → **Enregistrer**.
-3. Onglet **Utilisateurs** → **Ajouter un utilisateur** : saisissez l'email et un mot de passe pour **chaque membre** de la famille (vous, papa, maman…).
+3. Onglet **Utilisateurs** → **Ajouter un utilisateur**, 5 fois, avec à chaque fois le mot de passe commun choisi par la famille :
+
+   | Profil | Adresse e-mail à saisir dans Firebase |
+   |---|---|
+   | Etienne | `etienne.graimbouville@example.com` |
+   | Caroline | `caroline.graimbouville@example.com` |
+   | Fabienne | `fabienne.graimbouville@example.com` |
+   | Amélie | `amelie.graimbouville@example.com` |
+   | Matthias | `matthias.graimbouville@example.com` |
+
 4. Onglet **Paramètres** → **Actions des utilisateurs** → **décochez** « Activer la création (inscription) » → **Enregistrer**.
-   *(Ainsi, personne d'autre ne peut se créer un compte.)*
+
+> ⚠️ Le mot de passe n'est écrit **nulle part** dans le code : il est seulement saisi dans Firebase. Ce dépôt étant public, ne l'ajoutez jamais dans un fichier.
+>
+> Pour changer le mot de passe commun : Authentication → Utilisateurs → **⋮** sur chaque profil → **Réinitialiser le mot de passe**… ou supprimez puis recréez le compte avec le nouveau mot de passe (les données ne sont pas perdues).
+>
+> Pour ajouter ou renommer un profil : modifiez la liste `PROFILS` dans `site/js/firebase-config.js` **et** la liste des adresses dans `firestore.rules`, puis créez le compte correspondant.
 
 ### Étape 4 — Créer la base de données et la protéger
 
 1. Menu de gauche : **Création** → **Firestore Database** → **Créer une base de données**.
 2. Emplacement : **europe-west9 (Paris)** → **Suivant** → **Démarrer en mode production** → **Créer**.
 3. Ouvrez l'onglet **Règles**.
-4. Ouvrez le fichier `firestore.rules` (avec le Bloc-notes), **remplacez les 3 adresses d'exemple** par les adresses email des comptes créés à l'étape 3 (en minuscules, entre apostrophes, séparées par des virgules). Exemple :
-
-   ```
-   && request.auth.token.email in [
-     'prenom.nom@exemple.fr',
-     'papa@exemple.fr',
-     'maman@exemple.fr'
-   ];
-   ```
-
+4. Ouvrez le fichier `firestore.rules` (avec le Bloc-notes) : il contient déjà les 5 identifiants des profils.
 5. Copiez **tout** le contenu du fichier, collez-le à la place du texte présent dans l'onglet **Règles**, puis cliquez sur **Publier**.
-
-> Pour ajouter un membre plus tard : créez son compte (étape 3) **et** ajoutez son email dans les règles (étape 4), puis **Publier**.
 
 ### Étape 5 — Relier l'application à Firebase
 
@@ -91,7 +96,7 @@ Sur la page GitHub du projet : bouton vert **Code** → **Download ZIP**, puis d
    };
    ```
 
-6. Facultatif : dans le même fichier, changez la ligne `PAYEURS` si vous préférez des prénoms à « Moi » / « Mes parents ».
+6. Les 5 profils et les payeurs proposés pour les dépenses sont définis dans ce même fichier (liste `PROFILS`).
 7. Enregistrez le fichier.
 
 > ℹ️ La « apiKey » n'est pas un secret : elle identifie simplement votre projet. La protection des données est assurée par les comptes et les règles de l'étape 4.
@@ -133,7 +138,7 @@ L'icône « Graimbouville » apparaît alors sur l'écran d'accueil comme une ap
 
 ## 💡 Bon à savoir
 
-- **Mot de passe oublié** : bouton sur l'écran de connexion (un email de réinitialisation est envoyé).
+- **Connexion** : on touche son prénom puis on saisit le mot de passe commun. Le téléphone se souvient du dernier prénom choisi.
 - **Hors connexion** : l'application reste consultable ; les ajouts faits sans réseau sont envoyés automatiquement au retour de la connexion (pastille « Hors connexion » en haut).
 - **Export** : en bas de l'onglet Dépenses, le bouton « Exporter » crée un fichier ouvrable dans Excel (avec les filtres en cours).
 - **Limites gratuites Firebase** : 1 Go de données (≈ 3 000 à 5 000 photos) et 50 000 lectures par jour — largement suffisant pour une famille.
@@ -144,7 +149,7 @@ L'icône « Graimbouville » apparaît alors sur l'écran d'accueil comme une ap
 | Symptôme | Solution |
 |---|---|
 | « Configuration à terminer » | `js/firebase-config.js` n'a pas été complété ou n'a pas été renvoyé sur OVH (étape 5). |
-| « Email ou mot de passe incorrect » | Vérifiez le compte dans Firebase → Authentication → Utilisateurs. |
-| « Ce compte n'est pas autorisé… » | L'email n'est pas dans les règles Firestore, ou les règles n'ont pas été **publiées** (étape 4). |
+| « Mot de passe incorrect » / « Ce profil n'a pas encore de compte » | Vérifiez le compte du profil dans Firebase → Authentication → Utilisateurs (adresse exacte du tableau de l'étape 3). |
+| « Ce compte n'est pas autorisé… » | L'adresse du profil n'est pas dans les règles Firestore, ou les règles n'ont pas été **publiées** (étape 4). |
 | Le bouton « Installer » n'apparaît pas | Vérifiez que l'adresse commence par `https://` (étape 6.1). Sur iPhone, utilisez Safari. |
 | Les modifications n'apparaissent pas après une mise à jour | Augmentez la version dans `sw.js`, puis fermez/rouvrez l'application. |

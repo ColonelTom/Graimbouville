@@ -7,13 +7,13 @@
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
-  getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail
+  getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   initializeFirestore, persistentLocalCache, persistentMultipleTabManager,
   collection, doc, setDoc, deleteDoc, getDoc, onSnapshot, serverTimestamp, writeBatch
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { firebaseConfig, PAYEURS } from "./firebase-config.js";
+import { firebaseConfig, PAYEURS, PROFILS } from "./firebase-config.js";
 
 // ---------------------------------------------------------------------
 //  Listes de référence
@@ -204,9 +204,9 @@ function confirmer(message, libelleOk = "Supprimer") {
 function messageErreur(err) {
   const code = err && err.code ? String(err.code) : "";
   const messages = {
-    "auth/invalid-credential": "Email ou mot de passe incorrect.",
-    "auth/wrong-password": "Email ou mot de passe incorrect.",
-    "auth/user-not-found": "Email ou mot de passe incorrect.",
+    "auth/invalid-credential": "Mot de passe incorrect.",
+    "auth/wrong-password": "Mot de passe incorrect.",
+    "auth/user-not-found": "Ce profil n'a pas encore de compte dans Firebase.",
     "auth/invalid-email": "Adresse email invalide.",
     "auth/user-disabled": "Ce compte a été désactivé.",
     "auth/too-many-requests": "Trop de tentatives. Réessayez dans quelques minutes.",
@@ -253,6 +253,12 @@ function ecrire(promesse) {
 }
 
 const emailCourant = () => (auth && auth.currentUser && auth.currentUser.email) || "";
+/** Prénom du profil connecté (ou son adresse si elle n'est pas dans la liste des profils). */
+function profilCourant() {
+  const email = emailCourant().toLowerCase();
+  const p = PROFILS.find((x) => x.identifiant.toLowerCase() === email);
+  return p ? p.prenom : email;
+}
 
 // ---------------------------------------------------------------------
 //  État de l'application
@@ -340,7 +346,7 @@ function imagePhoto(id, legende = "", classe = "miniature") {
 function enregistrerNouvellePhoto(dataUrl) {
   const ref = doc(collection(db, "photos"));
   cachePhotos.set(ref.id, dataUrl);
-  const promesse = ecrire(setDoc(ref, { data: dataUrl, creePar: emailCourant(), creeLe: serverTimestamp() }));
+  const promesse = ecrire(setDoc(ref, { data: dataUrl, creePar: profilCourant(), creeLe: serverTimestamp() }));
   return { id: ref.id, promesse };
 }
 function supprimerPhoto(id) {
@@ -740,7 +746,9 @@ function vueDepenses() {
       h("span", { class: "discret" }, liste.length + " dépense" + (liste.length > 1 ? "s" : ""))
     ),
     h("div", { class: "resume-payeurs" },
-      Object.entries(parPayeur).map(([p, m]) => h("div", {}, h("span", {}, p), h("strong", {}, euros(m))))
+      Object.entries(parPayeur)
+        .sort(([a], [b]) => (PAYEURS.indexOf(a) + 1 || 99) - (PAYEURS.indexOf(b) + 1 || 99))
+        .map(([p, m]) => h("div", {}, h("span", {}, p), h("strong", {}, euros(m))))
     )
   );
 
@@ -787,7 +795,7 @@ function vueDepenses() {
 function formulaireDepense(dep) {
   ouvrirFormulaire({
     titre: dep ? "Modifier la dépense" : "Nouvelle dépense",
-    valeurs: dep ? { ...dep, photo: dep.photoId } : { date: aujourdhui(), payeur: PAYEURS[0], categorie: CATEGORIES[0] },
+    valeurs: dep ? { ...dep, photo: dep.photoId } : { date: aujourdhui(), payeur: PAYEURS.includes(profilCourant()) ? profilCourant() : PAYEURS[0], categorie: CATEGORIES[0] },
     champs: [
       { nom: "date", label: "Date", type: "date", requis: true },
       { nom: "libelle", label: "Intitulé / description", requis: true, placeholder: "ex : Réparation fuite toiture" },
@@ -814,9 +822,9 @@ function formulaireDepense(dep) {
       const ref = dep ? doc(db, "depenses", dep.id) : doc(collection(db, "depenses"));
       const donnees = {
         date: v.date, libelle: v.libelle, categorie: v.categorie, montant, payeur: v.payeur,
-        notes: v.notes, photoId, modifiePar: emailCourant(), modifieLe: serverTimestamp()
+        notes: v.notes, photoId, modifiePar: profilCourant(), modifieLe: serverTimestamp()
       };
-      if (!dep) { donnees.creePar = emailCourant(); donnees.creeLe = serverTimestamp(); }
+      if (!dep) { donnees.creePar = profilCourant(); donnees.creeLe = serverTimestamp(); }
       attentes.push(ecrire(setDoc(ref, donnees, { merge: true })));
       await Promise.all(attentes);
     },
@@ -939,7 +947,7 @@ function formulaireContact(c) {
     ],
     onValider: async (v) => {
       const ref = c ? doc(db, "contacts", c.id) : doc(collection(db, "contacts"));
-      await ecrire(setDoc(ref, { ...v, modifiePar: emailCourant(), modifieLe: serverTimestamp() }, { merge: true }));
+      await ecrire(setDoc(ref, { ...v, modifiePar: profilCourant(), modifieLe: serverTimestamp() }, { merge: true }));
       etat.ongletContacts = v.type;
     },
     onSupprimer: c ? () => ecrire(deleteDoc(doc(db, "contacts", c.id))) : null
@@ -1050,7 +1058,7 @@ function formulaireCoffre(type, e) {
       if (v.iban) v.iban = v.iban.replace(/\s/g, "").toUpperCase();
       if (v.bic) v.bic = v.bic.replace(/\s/g, "").toUpperCase();
       const ref = e ? doc(db, "coffre", e.id) : doc(collection(db, "coffre"));
-      await ecrire(setDoc(ref, { ...v, type, modifiePar: emailCourant(), modifieLe: serverTimestamp() }, { merge: true }));
+      await ecrire(setDoc(ref, { ...v, type, modifiePar: profilCourant(), modifieLe: serverTimestamp() }, { merge: true }));
     },
     onSupprimer: e ? () => ecrire(deleteDoc(doc(db, "coffre", e.id))) : null
   });
@@ -1161,7 +1169,7 @@ function formulaireEtape(type, e) {
       const ref = e ? doc(db, "procedures", e.id) : doc(collection(db, "procedures"));
       attentes.push(ecrire(setDoc(ref, {
         type: v.type, titre: v.titre, description: v.description, photos, ordre,
-        modifiePar: emailCourant(), modifieLe: serverTimestamp()
+        modifiePar: profilCourant(), modifieLe: serverTimestamp()
       }, { merge: true })));
       await Promise.all(attentes);
       etat.ongletMaison = v.type;
@@ -1244,34 +1252,55 @@ function afficherErreurConnexion(message) {
   p.hidden = !message;
 }
 
+let profilChoisi = null;
+
+/** Affiche les 5 profils sur l'écran de connexion. */
+function dessinerProfils() {
+  const zone = $("#choix-profils");
+  const form = $("#form-connexion");
+  zone.replaceChildren(...PROFILS.map((p) => {
+    const choisi = profilChoisi && profilChoisi.prenom === p.prenom;
+    return h("button", {
+      type: "button", class: "profil" + (choisi ? " choisi" : ""), "aria-pressed": choisi ? "true" : "false",
+      onclick: () => {
+        profilChoisi = p;
+        stockageEcrire("dernier-profil", p.prenom);
+        form.identifiant.value = p.identifiant;
+        afficherErreurConnexion("");
+        dessinerProfils();
+        form.motdepasse.focus();
+      }
+    },
+      h("span", { class: "profil-initiale" }, p.prenom.charAt(0)),
+      h("span", { class: "profil-nom" }, p.prenom)
+    );
+  }));
+}
+
 function initialiserConnexion() {
+  // Pré-sélection du dernier profil utilisé sur ce téléphone
+  const dernier = stockageLire("dernier-profil");
+  profilChoisi = PROFILS.find((p) => p.prenom === dernier) || null;
+  if (profilChoisi) $("#form-connexion").identifiant.value = profilChoisi.identifiant;
+  dessinerProfils();
+
   $("#form-connexion").addEventListener("submit", async (e) => {
     e.preventDefault();
     const f = e.target;
     const btn = f.querySelector("button[type=submit]");
+    if (!profilChoisi) { afficherErreurConnexion("Touchez d'abord votre prénom."); return; }
+    if (!f.motdepasse.value) { afficherErreurConnexion("Saisissez le mot de passe."); f.motdepasse.focus(); return; }
     afficherErreurConnexion("");
     btn.disabled = true;
     btn.textContent = "Connexion…";
     try {
-      await signInWithEmailAndPassword(auth, f.email.value.trim(), f.motdepasse.value);
+      await signInWithEmailAndPassword(auth, profilChoisi.identifiant, f.motdepasse.value);
       f.motdepasse.value = "";
     } catch (err) {
       afficherErreurConnexion(messageErreur(err));
     } finally {
       btn.disabled = false;
       btn.textContent = "Se connecter";
-    }
-  });
-
-  $("#btn-oubli").addEventListener("click", async () => {
-    const email = $("#form-connexion").email.value.trim();
-    if (!email) { afficherErreurConnexion("Saisissez d'abord votre adresse email ci-dessus."); return; }
-    try {
-      await sendPasswordResetEmail(auth, email);
-      afficherErreurConnexion("");
-      toast("Si ce compte existe, un email de réinitialisation a été envoyé à " + email);
-    } catch (err) {
-      afficherErreurConnexion(messageErreur(err));
     }
   });
 }
@@ -1284,18 +1313,10 @@ function ouvrirCompte() {
       h("button", { type: "button", class: "btn-icone", "aria-label": "Fermer", onclick: () => dlg.close() }, ic("croix"))
     ),
     h("div", { class: "formulaire-corps" },
-      h("p", {}, "Connecté en tant que :"),
-      h("p", {}, h("strong", {}, emailCourant())),
+      h("p", {}, "Connecté en tant que ", h("strong", {}, profilCourant())),
       h("p", { class: "discret" }, "Les données sont partagées en temps réel avec toute la famille et restent consultables hors connexion sur ce téléphone.")
     ),
     h("div", { class: "formulaire-pied" },
-      h("button", {
-        type: "button", class: "btn secondaire",
-        onclick: async () => {
-          try { await sendPasswordResetEmail(auth, emailCourant()); toast("Email de changement de mot de passe envoyé"); }
-          catch (err) { toast(messageErreur(err), true); }
-        }
-      }, "Changer mon mot de passe"),
       h("span", { class: "espace" }),
       h("button", {
         type: "button", class: "btn danger",

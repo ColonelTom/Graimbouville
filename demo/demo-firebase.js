@@ -6,7 +6,10 @@
 window.GRAIMBOUVILLE_DEMO = true;
 
 const firebaseConfig = { apiKey: "DEMO" };
-const PAYEURS = ["Moi", "Mes parents"];
+const PROFILS = ["Etienne", "Caroline", "Fabienne", "Amélie", "Matthias"].map((prenom) => ({
+  prenom, identifiant: prenom.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") + ".graimbouville@example.com"
+}));
+const PAYEURS = PROFILS.map((p) => p.prenom);
 
 // ---------- Faux Firebase Auth ----------
 let demoUtilisateur = null;
@@ -14,9 +17,9 @@ const demoAbonnesAuth = [];
 function initializeApp(c) { return { c }; }
 function getAuth() { return { get currentUser() { return demoUtilisateur; } }; }
 function onAuthStateChanged(a, cb) { demoAbonnesAuth.push(cb); setTimeout(() => cb(demoUtilisateur), 0); }
-async function signInWithEmailAndPassword(a, email) {
+async function signInWithEmailAndPassword(a, email) { // en démo, tout mot de passe est accepté
   await new Promise((r) => setTimeout(r, 400));
-  demoUtilisateur = { email: email || "demo@graimbouville.fr" };
+  demoUtilisateur = { email: email || PROFILS[0].identifiant };
   demoAbonnesAuth.forEach((s) => s(demoUtilisateur));
 }
 async function signOut() { demoUtilisateur = null; demoAbonnesAuth.forEach((s) => s(null)); }
@@ -115,25 +118,25 @@ function demoTicket() {
     return id;
   };
   const photo = (dataUrl) => ajout("photos", { data: dataUrl });
-  const auteur = { creePar: "demo@graimbouville.fr" };
+  const auteur = { creePar: "Etienne" };
 
   // Dépenses
   const ticket = photo(demoTicket());
   [
-    ["2026-10-24", "Achat de peinture (chambre du haut)", "Achats divers / courses", 45.9, "Moi", ticket],
-    ["2026-10-12", "Ramonage de la cheminée", "Réparations", 85, "Mes parents"],
-    ["2026-10-03", "Facture d'électricité septembre", "Électricité", 38.6, "Mes parents"],
-    ["2026-09-18", "Réparation fuite toiture", "Réparations", 820, "Mes parents"],
-    ["2026-09-05", "Courses d'ouverture (produits ménagers)", "Achats divers / courses", 62.35, "Moi"],
-    ["2026-08-28", "Facture d'eau semestrielle", "Eau", 74.2, "Mes parents"],
-    ["2026-08-14", "Remplacement du ballon d'eau chaude", "Réparations", 1240, "Moi"],
-    ["2026-07-02", "Tondeuse : révision", "Réparations", 95, "Moi"],
-    ["2026-06-15", "Facture d'électricité printemps", "Électricité", 52.1, "Mes parents"],
-    ["2026-03-01", "Assurance habitation 2026", "Assurance", 412.4, "Mes parents"],
-    ["2026-02-10", "Bois de chauffage (2 stères)", "Achats divers / courses", 190, "Moi"],
-    ["2025-12-20", "Facture d'eau semestrielle", "Eau", 68.9, "Mes parents"],
-    ["2025-11-08", "Purge et entretien chaudière", "Réparations", 160, "Mes parents"],
-    ["2025-03-01", "Assurance habitation 2025", "Assurance", 398, "Mes parents"]
+    ["2026-10-24", "Achat de peinture (chambre du haut)", "Achats divers / courses", 45.9, "Matthias", ticket],
+    ["2026-10-12", "Ramonage de la cheminée", "Réparations", 85, "Etienne"],
+    ["2026-10-03", "Facture d'électricité septembre", "Électricité", 38.6, "Fabienne"],
+    ["2026-09-18", "Réparation fuite toiture", "Réparations", 820, "Etienne"],
+    ["2026-09-05", "Courses d'ouverture (produits ménagers)", "Achats divers / courses", 62.35, "Amélie"],
+    ["2026-08-28", "Facture d'eau semestrielle", "Eau", 74.2, "Caroline"],
+    ["2026-08-14", "Remplacement du ballon d'eau chaude", "Réparations", 1240, "Matthias"],
+    ["2026-07-02", "Tondeuse : révision", "Réparations", 95, "Amélie"],
+    ["2026-06-15", "Facture d'électricité printemps", "Électricité", 52.1, "Fabienne"],
+    ["2026-03-01", "Assurance habitation 2026", "Assurance", 412.4, "Etienne"],
+    ["2026-02-10", "Bois de chauffage (2 stères)", "Achats divers / courses", 190, "Caroline"],
+    ["2025-12-20", "Facture d'eau semestrielle", "Eau", 68.9, "Fabienne"],
+    ["2025-11-08", "Purge et entretien chaudière", "Réparations", 160, "Etienne"],
+    ["2025-03-01", "Assurance habitation 2025", "Assurance", 398, "Etienne"]
   ].forEach(([date, libelle, categorie, montant, payeur, photoId]) =>
     ajout("depenses", { date, libelle, categorie, montant, payeur, photoId: photoId || null, notes: "", ...auteur }));
 
@@ -197,10 +200,9 @@ function demoTicket() {
 setTimeout(function interfaceDemo() {
   // Formulaire de connexion pré-rempli
   const form = document.querySelector("#form-connexion");
-  form.email.value = "demo@graimbouville.fr";
   form.motdepasse.value = "demonstration";
   form.querySelector("button[type=submit]").before(
-    h("p", { class: "aide-demo" }, "Version de démonstration : appuyez simplement sur « Se connecter ».")
+    h("p", { class: "aide-demo" }, "Démo : touchez un prénom puis « Se connecter » (le mot de passe est déjà rempli).")
   );
 
   // Bandeau « démo » sous l'en-tête
@@ -224,7 +226,7 @@ setTimeout(function interfaceDemo() {
     const zone = h("textarea", { id: "avis-texte", rows: 5, maxlength: 3000, placeholder: "Ce qui vous plaît, ce qui manque, ce qui n'est pas clair…" });
     zone.value = brouillon;
     zone.addEventListener("input", () => { brouillon = zone.value; });
-    const qui = h("input", { id: "avis-qui", type: "text", placeholder: "ex : Maman", autocomplete: "off" });
+    const qui = h("input", { id: "avis-qui", type: "text", placeholder: "ex : Caroline", autocomplete: "off", value: profilCourant() });
     const sujet = h("select", { id: "avis-sujet" }, Object.entries(RUBRIQUES).map(([k, v]) => h("option", { value: k }, v)));
     sujet.value = RUBRIQUES[etat.route] ? etat.route : "general";
     const message = h("p", { class: "erreur", hidden: true });

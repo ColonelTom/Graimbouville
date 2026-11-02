@@ -107,6 +107,22 @@ code { background: var(--primaire-clair); padding: 1px 5px; border-radius: 4px; 
 .connexion-titre { display: flex; flex-direction: column; gap: 2px; margin-bottom: 4px; }
 .connexion-titre h1 { font-size: 28px; font-weight: 700; letter-spacing: -.02em; }
 .connexion-titre .sous-titre { margin: 0; font-size: 15px; }
+.profils { border: none; margin: 0; padding: 0; min-width: 0; }
+.profils legend { padding: 0; margin-bottom: 10px; }
+.profils-grille { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; }
+.profil {
+  display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0;
+  padding: 4px 0; border: none; background: none; cursor: pointer; color: var(--discret);
+}
+.profil-initiale {
+  width: 50px; height: 50px; border-radius: 50%; display: grid; place-items: center;
+  font-size: 20px; font-weight: 600; background: var(--primaire-clair); color: var(--primaire);
+  transition: background .15s, color .15s;
+}
+.profil-nom { font-size: 12.5px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.profil.choisi { color: var(--texte); font-weight: 600; }
+.profil.choisi .profil-initiale { background: var(--primaire); color: var(--sur-primaire); }
+.profil:focus-visible .profil-initiale { outline: 2px solid var(--primaire); outline-offset: 2px; }
 .formulaire-connexion {
   width: 100%; max-width: 400px; text-align: left; background: var(--carte);
   display: flex; flex-direction: column; gap: 14px; padding: 22px 20px; border-radius: 16px;
@@ -260,7 +276,7 @@ dialog#modale::backdrop { background: rgba(0, 0, 0, .45); }
 .avec-bouton { display: flex; gap: 6px; align-items: center; }
 
 .segments { display: flex; gap: 6px; flex-wrap: wrap; }
-.segments label { flex: 1; min-width: 110px; }
+.segments label { flex: 1 1 28%; min-width: 88px; }
 .segments input { position: absolute; opacity: 0; pointer-events: none; width: 1px; }
 .segments span {
   display: block; text-align: center; padding: 11px; border-radius: 10px; cursor: pointer;

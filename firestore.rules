@@ -3,8 +3,8 @@ rules_version = '2';
 // =====================================================================
 //  Règles de sécurité Firestore — Graimbouville
 //  Seules les adresses email listées ci-dessous peuvent lire ou écrire.
-//  -> Remplacez les adresses d'exemple par celles de la famille,
-//     puis collez ce fichier dans Firebase > Firestore > Règles > Publier.
+//  Ce sont les identifiants des 5 profils (voir js/firebase-config.js).
+//  Collez ce fichier dans Firebase > Firestore > Règles > Publier.
 // =====================================================================
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -12,9 +12,11 @@ service cloud.firestore {
     function estMembreDeLaFamille() {
       return request.auth != null
         && request.auth.token.email in [
-          'votre.email@exemple.fr',
-          'papa@exemple.fr',
-          'maman@exemple.fr'
+          'etienne.graimbouville@example.com',
+          'caroline.graimbouville@example.com',
+          'fabienne.graimbouville@example.com',
+          'amelie.graimbouville@example.com',
+          'matthias.graimbouville@example.com'
         ];
     }
 
