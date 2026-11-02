@@ -1,0 +1,23 @@
+# Graimbouville — réglages pour l'hébergement OVH (Apache)
+
+# 1) Toujours utiliser HTTPS (obligatoire pour une PWA et le presse-papiers)
+RewriteEngine On
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# 2) Type correct pour le manifeste de l'application
+AddType application/manifest+json .webmanifest
+
+# 3) Ne pas garder en cache les fichiers qui changent lors des mises à jour
+<IfModule mod_headers.c>
+  <FilesMatch "(sw\.js|index\.html|app\.js|style\.css|firebase-config\.js|\.webmanifest)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "no-referrer"
+  Header always set X-Frame-Options "DENY"
+</IfModule>
+
+# 4) Pas de liste des fichiers du dossier
+Options -Indexes

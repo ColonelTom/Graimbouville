@@ -1,0 +1,30 @@
+rules_version = '2';
+
+// =====================================================================
+//  Règles de sécurité Firestore — Graimbouville
+//  Seules les adresses email listées ci-dessous peuvent lire ou écrire.
+//  -> Remplacez les adresses d'exemple par celles de la famille,
+//     puis collez ce fichier dans Firebase > Firestore > Règles > Publier.
+// =====================================================================
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function estMembreDeLaFamille() {
+      return request.auth != null
+        && request.auth.token.email in [
+          'votre.email@exemple.fr',
+          'papa@exemple.fr',
+          'maman@exemple.fr'
+        ];
+    }
+
+    match /depenses/{id}   { allow read, write: if estMembreDeLaFamille(); }
+    match /contacts/{id}   { allow read, write: if estMembreDeLaFamille(); }
+    match /coffre/{id}     { allow read, write: if estMembreDeLaFamille(); }
+    match /procedures/{id} { allow read, write: if estMembreDeLaFamille(); }
+    match /photos/{id}     { allow read, write: if estMembreDeLaFamille(); }
+
+    // Tout le reste est interdit
+    match /{autre=**} { allow read, write: if false; }
+  }
+}

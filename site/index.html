@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#2f5d50">
+  <meta name="description" content="Gestion familiale de la maison de Graimbouville">
+  <meta name="robots" content="noindex, nofollow">
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Graimbouville">
+
+  <title>Graimbouville</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+
+  <!-- Écran de chargement -->
+  <div id="ecran-chargement" class="ecran-centre">
+    <img src="icons/icon-192.png" alt="" width="96" height="96" class="logo">
+    <p>Chargement…</p>
+  </div>
+
+  <!-- Écran : configuration manquante -->
+  <div id="ecran-config" class="ecran-centre" hidden>
+    <img src="icons/icon-192.png" alt="" width="96" height="96" class="logo">
+    <h1>Configuration à terminer</h1>
+    <p>Le fichier <code>js/firebase-config.js</code> doit être complété avec les informations
+      de votre projet Firebase. Suivez le guide d'installation (README).</p>
+  </div>
+
+  <!-- Écran : connexion -->
+  <div id="ecran-connexion" class="ecran-centre" hidden>
+    <img src="icons/icon-192.png" alt="" width="96" height="96" class="logo">
+    <h1>Graimbouville</h1>
+    <p class="sous-titre">La maison de famille</p>
+    <form id="form-connexion" class="carte formulaire-connexion">
+      <label>Adresse email
+        <input type="email" name="email" autocomplete="username" required>
+      </label>
+      <label>Mot de passe
+        <input type="password" name="motdepasse" autocomplete="current-password" required>
+      </label>
+      <p id="erreur-connexion" class="erreur" hidden></p>
+      <button type="submit" class="btn primaire large">Se connecter</button>
+      <button type="button" id="btn-oubli" class="btn lien">Mot de passe oublié ?</button>
+    </form>
+  </div>
+
+  <!-- Application -->
+  <div id="app" hidden>
+    <header class="entete">
+      <h1 id="titre-page">Graimbouville</h1>
+      <span id="hors-ligne" class="pastille" hidden>Hors connexion</span>
+      <button id="btn-compte" class="btn-icone" type="button" aria-label="Mon compte">👤</button>
+    </header>
+
+    <div id="bandeau-installation" class="bandeau" hidden></div>
+
+    <main id="contenu"></main>
+
+    <button id="fab" class="fab" type="button" aria-label="Ajouter">+</button>
+
+    <nav class="onglets">
+      <button type="button" data-route="depenses"><span>💶</span>Dépenses</button>
+      <button type="button" data-route="contacts"><span>📞</span>Contacts</button>
+      <button type="button" data-route="coffre"><span>🔐</span>Coffre-fort</button>
+      <button type="button" data-route="maison"><span>🏠</span>Maison</button>
+    </nav>
+  </div>
+
+  <!-- Fenêtre de formulaire (remplie par le script) -->
+  <dialog id="modale"></dialog>
+
+  <!-- Visionneuse de photo plein écran -->
+  <div id="visionneuse" hidden>
+    <button type="button" class="fermer" aria-label="Fermer">✕</button>
+    <img alt="">
+    <p class="legende"></p>
+  </div>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

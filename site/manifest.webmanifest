@@ -1,0 +1,17 @@
+{
+  "name": "Graimbouville — La maison de famille",
+  "short_name": "Graimbouville",
+  "description": "Dépenses, contacts, coffre-fort et procédures de la maison de Normandie.",
+  "lang": "fr",
+  "start_url": "./#depenses",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f1ea",
+  "theme_color": "#2f5d50",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
