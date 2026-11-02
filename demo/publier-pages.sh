@@ -9,7 +9,7 @@ cp demo/autonome/index.html "$TMP/index.html"
 touch "$TMP/.nojekyll"
 cd "$TMP"
 git add -A
-git commit -m "Mise à jour de la démo" || echo "Rien de nouveau à publier"
+git commit -m "Mise à jour de la démo" -m "Claude-Session: https://claude.ai/code/session_01G3FZdQPfqVyMpSmkJXqHWS" || echo "Rien de nouveau à publier"
 git push origin gh-pages
 cd - >/dev/null
 git worktree remove --force "$TMP"
