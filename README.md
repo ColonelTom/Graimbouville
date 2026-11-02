@@ -62,9 +62,9 @@ Sur la page GitHub du projet : bouton vert **Code** → **Download ZIP**, puis d
 
    ```
    && request.auth.token.email in [
-     'thomas@gmail.com',
-     'papa@orange.fr',
-     'maman@orange.fr'
+     'prenom.nom@exemple.fr',
+     'papa@exemple.fr',
+     'maman@exemple.fr'
    ];
    ```
 

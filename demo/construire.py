@@ -63,3 +63,22 @@ page = f"""<title>Graimbouville</title>
 sortie = DEMO / "graimbouville-demo.html"
 sortie.write_text(page, encoding="utf-8")
 print(f"Démo générée : {sortie} ({len(page) // 1024} Ko)")
+
+# 4) Version autonome (page HTML complète) pour l'héberger n'importe où (OVH, GitHub Pages…)
+autonome = f"""<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="{data_uri(SITE / "icons" / "icon-192.png")}">
+</head>
+<body>
+{page}
+</body>
+</html>
+"""
+dossier = DEMO / "autonome"
+dossier.mkdir(exist_ok=True)
+(dossier / "index.html").write_text(autonome, encoding="utf-8")
+print(f"Version autonome : {dossier / 'index.html'}")
