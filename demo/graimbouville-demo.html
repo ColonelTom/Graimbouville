@@ -1,0 +1,2087 @@
+<title>Graimbouville</title>
+<meta name="theme-color" content="#2f5d50">
+<style>
+/* =====================================================================
+   Graimbouville — feuille de style (mobile d'abord, mode sombre inclus)
+   ===================================================================== */
+:root {
+  --primaire: #2f5d50;
+  --primaire-clair: #e3ede9;
+  --accent: #c45c3e;
+  --fond: #f4f1ea;
+  --carte: #ffffff;
+  --texte: #1f2a27;
+  --discret: #6b7470;
+  --bordure: #e2ddd2;
+  --danger: #b3261e;
+  --succes: #2e7d32;
+  --ombre: 0 1px 3px rgba(0, 0, 0, .08), 0 1px 2px rgba(0, 0, 0, .04);
+  --entete-fond: #2f5d50;
+  --sur-primaire: #ffffff;
+  --rayon: 14px;
+  --nav-h: 64px;
+  color-scheme: light;
+}
+/* Thème sombre : selon le réglage du téléphone, ou forcé par data-theme */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --primaire: #7fb8a6;
+    --primaire-clair: #22332e;
+    --accent: #e08a6f;
+    --fond: #121615;
+    --carte: #1c2220;
+    --texte: #e8ece9;
+    --discret: #9aa49f;
+    --bordure: #2c3532;
+    --danger: #f2827a;
+    --succes: #81c784;
+    --ombre: none;
+    --entete-fond: #1a2a25;
+    --sur-primaire: #0e1a16;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --primaire: #7fb8a6;
+  --primaire-clair: #22332e;
+  --accent: #e08a6f;
+  --fond: #121615;
+  --carte: #1c2220;
+  --texte: #e8ece9;
+  --discret: #9aa49f;
+  --bordure: #2c3532;
+  --danger: #f2827a;
+  --succes: #81c784;
+  --ombre: none;
+  --entete-fond: #1a2a25;
+  --sur-primaire: #0e1a16;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.45;
+  background: var(--fond);
+  color: var(--texte);
+  -webkit-tap-highlight-color: transparent;
+}
+[hidden] { display: none !important; }
+a { color: var(--primaire); }
+h1, h2, h3 { margin: 0; line-height: 1.2; }
+code { background: var(--primaire-clair); padding: 1px 5px; border-radius: 4px; }
+
+/* ---------- Écrans plein écran ---------- */
+.ecran-centre {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 24px 16px; text-align: center; gap: 8px;
+}
+.logo { border-radius: 22px; box-shadow: var(--ombre); }
+.sous-titre { color: var(--discret); margin: 0 0 16px; }
+.formulaire-connexion { width: 100%; max-width: 380px; text-align: left; display: flex; flex-direction: column; gap: 14px; padding: 20px; }
+.formulaire-connexion label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: 14px; }
+
+/* ---------- En-tête ---------- */
+.entete {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; gap: 10px;
+  padding: calc(env(safe-area-inset-top) + 10px) 16px 10px;
+  background: var(--entete-fond); color: #fff;
+}
+.entete h1 { font-size: 20px; flex: 1; }
+.entete .btn-icone { color: #fff; background: rgba(255, 255, 255, .15); }
+.pastille { font-size: 12px; background: var(--accent); color: #fff; padding: 3px 8px; border-radius: 99px; }
+
+/* ---------- Contenu ---------- */
+main {
+  padding: 12px 16px calc(var(--nav-h) + env(safe-area-inset-bottom) + 90px);
+  max-width: 720px; margin: 0 auto;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.carte { background: var(--carte); border-radius: var(--rayon); box-shadow: var(--ombre); border: 1px solid var(--bordure); }
+.pile { display: flex; flex-direction: column; gap: 10px; }
+.discret { color: var(--discret); font-size: 14px; }
+.erreur { color: var(--danger); font-size: 14px; margin: 0; }
+
+.vide { text-align: center; color: var(--discret); padding: 36px 16px; }
+.vide p { margin: 4px 0; }
+.rouet {
+  width: 28px; height: 28px; margin: 0 auto 10px;
+  border: 3px solid var(--bordure); border-top-color: var(--primaire); border-radius: 50%;
+  animation: tourner .8s linear infinite;
+}
+@keyframes tourner { to { transform: rotate(360deg); } }
+
+.bandeau {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; font-size: 14px;
+  background: var(--primaire-clair); color: var(--texte);
+}
+#bandeau-installation { max-width: 720px; margin: 10px auto 0; border-radius: var(--rayon); width: calc(100% - 32px); }
+#bandeau-installation span { flex: 1; }
+.bandeau.info { border-radius: var(--rayon); }
+
+/* ---------- Boutons ---------- */
+button { font: inherit; color: inherit; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 44px; padding: 10px 16px;
+  border-radius: 12px; border: 1px solid transparent;
+  font-weight: 600; font-size: 15px; text-decoration: none; cursor: pointer;
+  background: var(--primaire-clair); color: var(--primaire);
+}
+.btn:disabled { opacity: .55; cursor: default; }
+.btn.primaire { background: var(--primaire); color: var(--sur-primaire); }
+.btn.secondaire { background: transparent; border-color: var(--bordure); color: var(--texte); }
+.btn.danger { background: transparent; border-color: var(--danger); color: var(--danger); }
+.btn.lien { background: none; border: none; min-height: 0; padding: 6px 4px; color: var(--primaire); font-weight: 500; }
+.btn.lien.danger { color: var(--danger); }
+.btn.large { width: 100%; }
+.btn.petit { min-height: 34px; padding: 6px 12px; font-size: 14px; }
+.btn-icone {
+  width: 40px; height: 40px; flex: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: none; border-radius: 50%; background: transparent; cursor: pointer; font-size: 18px;
+}
+.btn-icone.petit { width: 34px; height: 34px; font-size: 16px; }
+.btn-icone:disabled { opacity: .25; }
+.btn-icone:active, .btn:active { transform: scale(.97); }
+
+/* ---------- Bouton flottant ---------- */
+.fab {
+  position: fixed; z-index: 20;
+  right: 18px; bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 16px);
+  width: 60px; height: 60px; border-radius: 50%; border: none;
+  background: var(--accent); color: #fff; font-size: 32px; line-height: 1;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .25); cursor: pointer;
+}
+.fab:active { transform: scale(.94); }
+
+/* ---------- Barre d'onglets du bas ---------- */
+.onglets {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 15;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  height: calc(var(--nav-h) + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--carte); border-top: 1px solid var(--bordure);
+}
+.onglets button {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  border: none; background: none; font-size: 11px; color: var(--discret); cursor: pointer;
+}
+.onglets button span { font-size: 22px; filter: grayscale(1); opacity: .7; }
+.onglets button.actif { color: var(--primaire); font-weight: 700; }
+.onglets button.actif span { filter: none; opacity: 1; }
+
+/* ---------- Sous-onglets ---------- */
+.sous-onglets { display: flex; gap: 6px; background: var(--primaire-clair); padding: 4px; border-radius: 12px; }
+.sous-onglets button {
+  flex: 1; border: none; background: none; padding: 9px 4px; border-radius: 9px;
+  font-size: 14px; font-weight: 600; color: var(--discret); cursor: pointer; white-space: nowrap;
+}
+.sous-onglets button.actif { background: var(--carte); color: var(--texte); box-shadow: var(--ombre); }
+
+/* ---------- Formulaires ---------- */
+input, select, textarea {
+  width: 100%; font: inherit; font-size: 16px; /* 16px évite le zoom automatique sur iPhone */
+  padding: 11px 12px; border-radius: 10px;
+  border: 1px solid var(--bordure); background: var(--fond); color: var(--texte);
+}
+textarea { resize: vertical; }
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--primaire); outline-offset: 0; border-color: transparent; }
+select { appearance: none; -webkit-appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--discret) 50%), linear-gradient(135deg, var(--discret) 50%, transparent 50%);
+  background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%;
+  background-size: 5px 5px; background-repeat: no-repeat; padding-right: 32px; }
+input[type="date"] { min-height: 46px; }
+
+dialog#modale {
+  width: 100%; max-width: 560px; max-height: 92vh; max-height: 92dvh;
+  margin: auto auto 0; padding: 0; border: none;
+  border-radius: 20px 20px 0 0; background: var(--carte); color: var(--texte);
+}
+@media (min-width: 600px) { dialog#modale { margin: auto; border-radius: 20px; } }
+dialog#modale::backdrop { background: rgba(0, 0, 0, .45); }
+.formulaire { display: flex; flex-direction: column; max-height: 92vh; max-height: 92dvh; }
+.formulaire-entete { display: flex; align-items: center; justify-content: space-between; padding: 14px 12px 8px 18px; border-bottom: 1px solid var(--bordure); }
+.formulaire-entete h2 { font-size: 18px; }
+.formulaire-corps { overflow-y: auto; padding: 14px 18px; display: flex; flex-direction: column; gap: 14px; -webkit-overflow-scrolling: touch; }
+.formulaire-pied {
+  display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+  padding: 12px 18px calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid var(--bordure);
+}
+.formulaire .erreur { padding: 0 18px; }
+.espace { flex: 1; }
+.champ { display: flex; flex-direction: column; gap: 6px; }
+.label { font-weight: 600; font-size: 14px; }
+.aide { color: var(--discret); }
+.avec-bouton { display: flex; gap: 6px; align-items: center; }
+
+.segments { display: flex; gap: 6px; flex-wrap: wrap; }
+.segments label { flex: 1; min-width: 110px; }
+.segments input { position: absolute; opacity: 0; pointer-events: none; width: 1px; }
+.segments span {
+  display: block; text-align: center; padding: 11px; border-radius: 10px; cursor: pointer;
+  border: 1px solid var(--bordure); background: var(--fond); font-weight: 600;
+}
+.segments input:checked + span { background: var(--primaire); color: var(--sur-primaire); border-color: var(--primaire); }
+
+.champ-photo .rangee { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+img.apercu { max-width: 100%; max-height: 240px; border-radius: 10px; display: block; margin-bottom: 8px; cursor: zoom-in; }
+.champ-photos { display: flex; flex-direction: column; gap: 10px; }
+.liste-photos-form { display: flex; flex-direction: column; gap: 10px; }
+.photo-form { display: flex; gap: 10px; align-items: flex-start; }
+.photo-form .miniature { width: 92px; height: 92px; }
+.photo-form-texte { flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+
+img.miniature { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; flex: none; cursor: zoom-in; background: var(--primaire-clair); }
+img.en-chargement { background: var(--primaire-clair); min-height: 60px; animation: pulser 1.2s ease-in-out infinite; }
+@keyframes pulser { 50% { opacity: .5; } }
+.photo-absente { font-size: 13px; color: var(--discret); font-style: italic; }
+
+/* ---------- Dépenses ---------- */
+.filtres { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.filtres select { width: auto; flex: 1 1 140px; padding: 8px 30px 8px 10px; font-size: 14px; background-color: var(--carte); }
+.filtres select.actif { border-color: var(--primaire); color: var(--primaire); font-weight: 600; }
+.resume { padding: 16px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+.resume-total { display: flex; flex-direction: column; flex: 1; min-width: 150px; }
+.resume-total strong { font-size: 28px; color: var(--primaire); }
+.resume-payeurs { display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+.resume-payeurs div { display: flex; justify-content: space-between; gap: 16px; }
+.groupe { display: flex; flex-direction: column; gap: 6px; }
+.groupe-titre { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; color: var(--discret); text-transform: uppercase; letter-spacing: .03em; padding: 6px 4px 0; }
+.liste { overflow: hidden; }
+.ligne-depense {
+  display: flex; align-items: center; gap: 12px; width: 100%;
+  padding: 12px 14px; background: none; border: none; border-bottom: 1px solid var(--bordure);
+  text-align: left; cursor: pointer;
+}
+.ligne-depense:last-child { border-bottom: none; }
+.ligne-depense:active { background: var(--primaire-clair); }
+.icone-cat { font-size: 22px; width: 40px; height: 40px; flex: none; display: flex; align-items: center; justify-content: center; background: var(--primaire-clair); border-radius: 50%; }
+.depense-texte { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.depense-texte strong { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.depense-texte small { color: var(--discret); font-size: 13px; }
+.montant { font-weight: 700; white-space: nowrap; }
+.pied-liste { display: flex; justify-content: center; padding-top: 8px; }
+
+/* ---------- Contacts ---------- */
+.recherche { background: var(--carte); }
+.contact, .coffre { padding: 4px 14px 12px; }
+.contact-entete, .coffre-entete {
+  display: flex; align-items: center; gap: 12px; width: 100%;
+  background: none; border: none; padding: 10px 0; text-align: left; cursor: pointer;
+}
+.avatar { font-size: 22px; width: 44px; height: 44px; flex: none; display: flex; align-items: center; justify-content: center; background: var(--primaire-clair); border-radius: 50%; }
+.contact-texte { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.contact-texte strong { font-size: 17px; }
+.contact-texte small { color: var(--discret); }
+.chevron { font-size: 14px; opacity: .6; }
+.contact-detail { margin: 0 0 8px; font-size: 14px; color: var(--discret); }
+.notes { white-space: pre-line; }
+.contact-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.contact-actions .btn { flex: 1 1 auto; }
+.grille-urgences { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.urgence {
+  display: flex; flex-direction: column; padding: 12px; border-radius: 12px; text-decoration: none;
+  background: var(--carte); border: 1px solid var(--bordure); color: var(--texte);
+}
+.urgence strong { font-size: 22px; color: var(--danger); }
+.urgence span { font-size: 13px; color: var(--discret); }
+.urgence.long strong { font-size: 17px; white-space: nowrap; }
+
+/* ---------- Coffre-fort ---------- */
+.ligne-info {
+  display: grid; grid-template-columns: 110px 1fr auto; gap: 8px; align-items: center;
+  padding: 8px 0; border-top: 1px solid var(--bordure); font-size: 15px;
+}
+.ligne-libelle { color: var(--discret); font-size: 13px; }
+.ligne-valeur { word-break: break-all; min-width: 0; }
+.ligne-valeur .masque { letter-spacing: .12em; color: var(--discret); }
+.actions-ligne { display: flex; gap: 2px; }
+@media (max-width: 380px) {
+  .ligne-info { grid-template-columns: 1fr auto; }
+  .ligne-libelle { grid-column: 1 / -1; }
+}
+
+/* ---------- Procédures ---------- */
+.progression { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--discret); }
+.progression .barre { flex: 1; height: 8px; background: var(--bordure); border-radius: 99px; overflow: hidden; }
+.progression .barre div { height: 100%; background: var(--succes); transition: width .25s; }
+.etape { padding: 12px 14px; }
+.etape-entete { display: flex; align-items: center; gap: 12px; }
+.etape-entete h3 { flex: 1; font-size: 17px; }
+.etape-outils { display: flex; }
+.case {
+  width: 36px; height: 36px; flex: none; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 2px solid var(--primaire); background: var(--carte); color: var(--primaire);
+  font-weight: 700; cursor: pointer;
+}
+.case.cochee { background: var(--succes); border-color: var(--succes); color: #fff; }
+.case.repere { border: none; background: var(--primaire-clair); cursor: default; }
+.etape.faite h3, .etape.faite .etape-description { opacity: .55; text-decoration: line-through; }
+.etape-description { white-space: pre-line; margin: 10px 0 0; }
+.etape-photos { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
+.etape-photos figure { margin: 0; }
+img.photo-etape { width: 100%; max-height: 360px; object-fit: cover; border-radius: 10px; display: block; cursor: zoom-in; min-height: 120px; }
+.etape-photos figcaption { margin-top: 6px; font-size: 14px; padding: 8px 10px; background: var(--primaire-clair); border-radius: 8px; white-space: pre-line; }
+
+/* ---------- Visionneuse ---------- */
+#visionneuse {
+  position: fixed; inset: 0; z-index: 100; background: rgba(0, 0, 0, .94);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px;
+}
+#visionneuse img { max-width: 100%; max-height: 82vh; object-fit: contain; }
+#visionneuse .legende { color: #fff; text-align: center; max-width: 600px; white-space: pre-line; }
+#visionneuse .fermer {
+  position: absolute; top: calc(env(safe-area-inset-top) + 12px); right: 12px;
+  width: 44px; height: 44px; border-radius: 50%; border: none; background: rgba(255, 255, 255, .2); color: #fff; font-size: 20px;
+}
+
+/* ---------- Message temporaire ---------- */
+#toast {
+  position: fixed; left: 50%; z-index: 200;
+  bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 90px);
+  transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
+  background: #1f2a27; color: #fff; padding: 10px 16px; border-radius: 12px;
+  font-size: 14px; max-width: calc(100% - 32px); text-align: center; transition: all .25s;
+}
+#toast.visible { opacity: 1; transform: translate(-50%, 0); }
+#toast.erreur { background: var(--danger); }
+
+/* ---------- Fenêtre de confirmation ---------- */
+dialog.confirmation {
+  width: calc(100% - 32px); max-width: 380px; padding: 20px; border: none; border-radius: 16px;
+  background: var(--carte); color: var(--texte);
+}
+dialog.confirmation::backdrop { background: rgba(0, 0, 0, .45); }
+dialog.confirmation p { margin: 0 0 18px; font-size: 16px; }
+.rangee-droite { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+
+/* ---------- Ajouts de la démo ---------- */
+.bandeau-demo {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 8px max(16px, env(safe-area-inset-left, 0px)) 8px max(16px, env(safe-area-inset-right, 0px));
+  background: var(--accent); color: var(--sur-primaire); font-size: 13px;
+}
+.bandeau-demo span { flex: 1 1 200px; min-width: 0; }
+.bandeau-demo .btn.primaire { background: var(--carte); color: var(--texte); }
+.aide-demo { margin: 0; font-size: 14px; color: var(--accent); font-weight: 600; }
+
+</style>
+
+
+  <!-- Écran de chargement -->
+  <div id="ecran-chargement" class="ecran-centre">
+    <img src="data:image/png;base64,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" alt="" width="96" height="96" class="logo">
+    <p>Chargement…</p>
+  </div>
+
+  <!-- Écran : configuration manquante -->
+  <div id="ecran-config" class="ecran-centre" hidden>
+    <img src="data:image/png;base64,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" alt="" width="96" height="96" class="logo">
+    <h1>Configuration à terminer</h1>
+    <p>Le fichier <code>js/firebase-config.js</code> doit être complété avec les informations
+      de votre projet Firebase. Suivez le guide d'installation (README).</p>
+  </div>
+
+  <!-- Écran : connexion -->
+  <div id="ecran-connexion" class="ecran-centre" hidden>
+    <img src="data:image/png;base64,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" alt="" width="96" height="96" class="logo">
+    <h1>Graimbouville</h1>
+    <p class="sous-titre">La maison de famille</p>
+    <form id="form-connexion" class="carte formulaire-connexion">
+      <label>Adresse email
+        <input type="email" name="email" autocomplete="username" required>
+      </label>
+      <label>Mot de passe
+        <input type="password" name="motdepasse" autocomplete="current-password" required>
+      </label>
+      <p id="erreur-connexion" class="erreur" hidden></p>
+      <button type="submit" class="btn primaire large">Se connecter</button>
+      <button type="button" id="btn-oubli" class="btn lien">Mot de passe oublié ?</button>
+    </form>
+  </div>
+
+  <!-- Application -->
+  <div id="app" hidden>
+    <header class="entete">
+      <h1 id="titre-page">Graimbouville</h1>
+      <span id="hors-ligne" class="pastille" hidden>Hors connexion</span>
+      <button id="btn-compte" class="btn-icone" type="button" aria-label="Mon compte">👤</button>
+    </header>
+
+    <div id="bandeau-installation" class="bandeau" hidden></div>
+
+    <main id="contenu"></main>
+
+    <button id="fab" class="fab" type="button" aria-label="Ajouter">+</button>
+
+    <nav class="onglets">
+      <button type="button" data-route="depenses"><span>💶</span>Dépenses</button>
+      <button type="button" data-route="contacts"><span>📞</span>Contacts</button>
+      <button type="button" data-route="coffre"><span>🔐</span>Coffre-fort</button>
+      <button type="button" data-route="maison"><span>🏠</span>Maison</button>
+    </nav>
+  </div>
+
+  <!-- Fenêtre de formulaire (remplie par le script) -->
+  <dialog id="modale"></dialog>
+
+  <!-- Visionneuse de photo plein écran -->
+  <div id="visionneuse" hidden>
+    <button type="button" class="fermer" aria-label="Fermer">✕</button>
+    <img alt="">
+    <p class="legende"></p>
+  </div>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+// =====================================================================
+//  DÉMO GRAIMBOUVILLE — remplace Firebase par une base en mémoire
+//  remplie de FAUSSES données. Ce fichier est assemblé avec js/app.js
+//  par demo/construire.py ; il n'est pas utilisé par la vraie application.
+// =====================================================================
+window.GRAIMBOUVILLE_DEMO = true;
+
+const firebaseConfig = { apiKey: "DEMO" };
+const PAYEURS = ["Moi", "Mes parents"];
+
+// ---------- Faux Firebase Auth ----------
+let demoUtilisateur = null;
+const demoAbonnesAuth = [];
+function initializeApp(c) { return { c }; }
+function getAuth() { return { get currentUser() { return demoUtilisateur; } }; }
+function onAuthStateChanged(a, cb) { demoAbonnesAuth.push(cb); setTimeout(() => cb(demoUtilisateur), 0); }
+async function signInWithEmailAndPassword(a, email) {
+  await new Promise((r) => setTimeout(r, 400));
+  demoUtilisateur = { email: email || "demo@graimbouville.fr" };
+  demoAbonnesAuth.forEach((s) => s(demoUtilisateur));
+}
+async function signOut() { demoUtilisateur = null; demoAbonnesAuth.forEach((s) => s(null)); }
+async function sendPasswordResetEmail() { /* rien en démo */ }
+
+// ---------- Faux Firestore ----------
+const demoBase = {};
+const demoEcouteurs = {};
+let demoCompteur = 0;
+const MARQUEUR_DATE = "__horodatage__";
+const demoCollection = (nom) => (demoBase[nom] ||= new Map());
+function demoInstantane(nom) {
+  return {
+    docs: [...demoCollection(nom).entries()].map(([id, d]) => ({
+      id, data: () => ({ ...d, photos: d.photos ? d.photos.map((p) => ({ ...p })) : d.photos })
+    }))
+  };
+}
+function demoNotifier(nom) { (demoEcouteurs[nom] || []).forEach((cb) => cb(demoInstantane(nom))); }
+function initializeFirestore() { return {}; }
+function persistentLocalCache() { return {}; }
+function persistentMultipleTabManager() { return {}; }
+function collection(db, nom) { return { nom }; }
+function doc(a, b, c) {
+  if (a && a.nom && b === undefined) return { nom: a.nom, id: "demo" + (++demoCompteur) };
+  return { nom: b, id: c };
+}
+function serverTimestamp() { return MARQUEUR_DATE; }
+async function setDoc(ref, data, opts) {
+  const m = demoCollection(ref.nom);
+  const ancien = opts && opts.merge ? (m.get(ref.id) || {}) : {};
+  const propre = {};
+  for (const [k, v] of Object.entries(data)) {
+    if (v === undefined) continue;
+    if (v === MARQUEUR_DATE) { const t = Date.now(); propre[k] = { toMillis: () => t }; } else propre[k] = v;
+  }
+  m.set(ref.id, { ...ancien, ...propre });
+  demoNotifier(ref.nom);
+}
+async function deleteDoc(ref) { demoCollection(ref.nom).delete(ref.id); demoNotifier(ref.nom); }
+async function getDoc(ref) {
+  await new Promise((r) => setTimeout(r, 120));
+  const d = demoCollection(ref.nom).get(ref.id);
+  return { exists: () => !!d, data: () => d };
+}
+function onSnapshot(c, cb) {
+  (demoEcouteurs[c.nom] ||= []).push(cb);
+  setTimeout(() => cb(demoInstantane(c.nom)), 250);
+  return () => { demoEcouteurs[c.nom] = demoEcouteurs[c.nom].filter((x) => x !== cb); };
+}
+function writeBatch() {
+  const ops = [];
+  return {
+    update(ref, d) { ops.push([ref, d]); },
+    async commit() { for (const [r, d] of ops) await setDoc(r, d, { merge: true }); }
+  };
+}
+
+// ---------- Photos d'exemple dessinées à la volée ----------
+function demoPhoto(titre, emoji, teinte) {
+  const c = document.createElement("canvas");
+  c.width = 800; c.height = 560;
+  const g = c.getContext("2d");
+  const fond = g.createLinearGradient(0, 0, 800, 560);
+  fond.addColorStop(0, `hsl(${teinte} 35% 78%)`);
+  fond.addColorStop(1, `hsl(${teinte} 30% 58%)`);
+  g.fillStyle = fond; g.fillRect(0, 0, 800, 560);
+  g.font = "180px sans-serif"; g.textAlign = "center"; g.textBaseline = "middle";
+  g.fillText(emoji, 400, 240);
+  g.fillStyle = "rgba(0,0,0,.55)"; g.fillRect(0, 440, 800, 120);
+  g.fillStyle = "#fff"; g.font = "bold 34px sans-serif"; g.fillText(titre, 400, 485);
+  g.font = "22px sans-serif"; g.fillText("Photo d'exemple (démo)", 400, 528);
+  return c.toDataURL("image/jpeg", 0.8);
+}
+function demoTicket() {
+  const c = document.createElement("canvas");
+  c.width = 500; c.height = 760;
+  const g = c.getContext("2d");
+  g.fillStyle = "#e9e6df"; g.fillRect(0, 0, 500, 760);
+  g.fillStyle = "#fff"; g.fillRect(60, 30, 380, 700);
+  g.fillStyle = "#222"; g.textAlign = "center";
+  g.font = "bold 30px monospace"; g.fillText("BRICO-EXEMPLE", 250, 90);
+  g.font = "18px monospace"; g.fillText("Magasin fictif — démo", 250, 122);
+  g.textAlign = "left"; g.font = "20px monospace";
+  const lignes = [["Peinture blanche 10L", "39,90"], ["Rouleau + bac", "6,00"], ["", ""], ["TOTAL TTC", "45,90 €"]];
+  lignes.forEach(([a, b], i) => { g.fillText(a, 90, 200 + i * 44); g.textAlign = "right"; g.fillText(b, 410, 200 + i * 44); g.textAlign = "left"; });
+  g.textAlign = "center"; g.font = "18px monospace"; g.fillText("Merci de votre visite", 250, 660);
+  return c.toDataURL("image/jpeg", 0.8);
+}
+
+// ---------- Fausses données ----------
+(function remplirDemo() {
+  const ajout = (nom, data) => {
+    const id = "demo" + (++demoCompteur);
+    demoCollection(nom).set(id, data);
+    return id;
+  };
+  const photo = (dataUrl) => ajout("photos", { data: dataUrl });
+  const auteur = { creePar: "demo@graimbouville.fr" };
+
+  // Dépenses
+  const ticket = photo(demoTicket());
+  [
+    ["2026-10-24", "Achat de peinture (chambre du haut)", "Achats divers / courses", 45.9, "Moi", ticket],
+    ["2026-10-12", "Ramonage de la cheminée", "Réparations", 85, "Mes parents"],
+    ["2026-10-03", "Facture d'électricité septembre", "Électricité", 38.6, "Mes parents"],
+    ["2026-09-18", "Réparation fuite toiture", "Réparations", 820, "Mes parents"],
+    ["2026-09-05", "Courses d'ouverture (produits ménagers)", "Achats divers / courses", 62.35, "Moi"],
+    ["2026-08-28", "Facture d'eau semestrielle", "Eau", 74.2, "Mes parents"],
+    ["2026-08-14", "Remplacement du ballon d'eau chaude", "Réparations", 1240, "Moi"],
+    ["2026-07-02", "Tondeuse : révision", "Réparations", 95, "Moi"],
+    ["2026-06-15", "Facture d'électricité printemps", "Électricité", 52.1, "Mes parents"],
+    ["2026-03-01", "Assurance habitation 2026", "Assurance", 412.4, "Mes parents"],
+    ["2026-02-10", "Bois de chauffage (2 stères)", "Achats divers / courses", 190, "Moi"],
+    ["2025-12-20", "Facture d'eau semestrielle", "Eau", 68.9, "Mes parents"],
+    ["2025-11-08", "Purge et entretien chaudière", "Réparations", 160, "Mes parents"],
+    ["2025-03-01", "Assurance habitation 2025", "Assurance", 398, "Mes parents"]
+  ].forEach(([date, libelle, categorie, montant, payeur, photoId]) =>
+    ajout("depenses", { date, libelle, categorie, montant, payeur, photoId: photoId || null, notes: "", ...auteur }));
+
+  // Contacts (noms et numéros fictifs)
+  [
+    ["artisan", "Plomberie Exemple", "Plombier", "02 00 00 00 01", "Intervient sous 48 h. A remplacé le ballon d'eau chaude en 2026."],
+    ["artisan", "Toitures Démo", "Couvreur", "02 00 00 00 02", "Devis gratuit. Réparation de la fuite en septembre."],
+    ["artisan", "Élec Service Fictif", "Électricien", "06 00 00 00 03", ""],
+    ["artisan", "M. Exemple", "Jardinier / paysagiste", "06 00 00 00 04", "Tonte toutes les 3 semaines d'avril à octobre."],
+    ["voisin", "Mme Voisine (exemple)", "Voisine d'en face, garde un double des clés", "06 00 00 00 05", "Prévenir de nos dates d'arrivée."],
+    ["voisin", "M. Gardien (exemple)", "Fait le tour de la maison en notre absence", "06 00 00 00 06", ""],
+    ["urgence", "Cabinet médical (exemple)", "Médecin généraliste", "02 00 00 00 07", "Ouvert lundi au samedi matin."],
+    ["urgence", "Mairie (exemple)", "Mairie", "02 00 00 00 08", ""]
+  ].forEach(([type, nom, specialite, telephone, notes]) =>
+    ajout("contacts", { type, nom, specialite, telephone, notes, ...auteur }));
+
+  // Coffre-fort (identifiants entièrement fictifs)
+  ajout("coffre", { type: "acces", titre: "Électricité (exemple)", url: "https://www.exemple.fr", identifiant: "famille.demo@exemple.fr", motDePasse: "Demo-Mdp-2026!", notes: "Compte au nom de Papa." });
+  ajout("coffre", { type: "acces", titre: "Box internet (exemple)", url: "https://www.exemple.fr", identifiant: "0200000000", motDePasse: "Faux-Code-1234", notes: "Code wifi au dos de la box." });
+  ajout("coffre", { type: "acces", titre: "Eau (exemple)", url: "https://www.exemple.fr", identifiant: "CLIENT-000123", motDePasse: "Exemple#Eau" });
+  ajout("coffre", { type: "contrat", titre: "Assurance habitation", categorie: "Assurance", compagnie: "Assureur Exemple", numeroContrat: "HAB-0000-1234", referenceClient: "CL-998877", contact: "02 00 00 00 09", notes: "Échéance annuelle le 1er mars." });
+  ajout("coffre", { type: "contrat", titre: "Électricité", categorie: "Électricité", compagnie: "Fournisseur Exemple", referenceClient: "000 111 222", compteur: "PDL 00000000000000", contact: "09 00 00 00 10" });
+  ajout("coffre", { type: "contrat", titre: "Internet", categorie: "Internet / Box", compagnie: "Opérateur Exemple", numeroContrat: "BOX-4455", referenceClient: "0200000000" });
+  ajout("coffre", { type: "banque", titre: "Compte maison (exemple)", titulaire: "Famille Exemple", banque: "Banque Fictive", iban: "FR7600000000000000000000000", bic: "EXEMFRPP", notes: "Faux RIB pour la démonstration." });
+
+  // Procédures
+  const etapes = {
+    arrivee: [
+      ["Ouvrir le robinet d'arrêt général", "Tourner la vanne bleue dans le sens inverse des aiguilles d'une montre, doucement.", [["Robinet d'arrêt", "🚰", 200, "Le robinet est dans le placard sous l'évier, derrière les produits ménagers."]]],
+      ["Remonter le disjoncteur général", "Lever la manette du disjoncteur, puis vérifier que tous les petits interrupteurs sont en haut.", [["Tableau électrique", "⚡", 45, "Le tableau est dans l'entrée, derrière la porte."]]],
+      ["Rallumer le chauffe-eau", "Mettre l'interrupteur « chauffe-eau » du tableau sur Marche. Compter 6 h pour avoir de l'eau chaude."],
+      ["Ouvrir les volets et aérer", "Commencer par le rez-de-chaussée. Aérer 15 minutes."],
+      ["Remettre le chauffage en route", "Thermostat sur 19 °C."]
+    ],
+    depart: [
+      ["Fermer tous les volets", "Vérifier aussi le volet de la salle de bain."],
+      ["Vider le réfrigérateur et le laisser ouvert", ""],
+      ["Couper le chauffe-eau", "Interrupteur « chauffe-eau » du tableau sur Arrêt."],
+      ["Fermer le robinet d'arrêt général", "Sens des aiguilles d'une montre jusqu'au blocage.", [["Robinet d'arrêt", "🚰", 200, "Même robinet qu'à l'arrivée, sous l'évier."]]],
+      ["Chauffage en mode hors-gel", "Mettre le thermostat sur le flocon ❄️ (hors-gel) en hiver."],
+      ["Fermer à clé et prévenir la voisine", "Envoyer un SMS à Mme Voisine pour la prévenir du départ."]
+    ],
+    repere: [
+      ["Purge du chauffe-eau", "Dans le cellier, en bas à droite du ballon.", [["Purge du chauffe-eau", "🔧", 15, "Robinet rouge en bas du ballon. Ne l'ouvrir qu'avec le chauffe-eau coupé."]]],
+      ["Compteur d'eau", "Regard dans le jardin, à gauche du portail. Couvercle vert."],
+      ["Double des clés", "Chez Mme Voisine (voir Contacts)."]
+    ]
+  };
+  for (const [type, liste] of Object.entries(etapes)) {
+    liste.forEach(([titre, description, photos], i) => {
+      ajout("procedures", {
+        type, titre, description, ordre: i + 1,
+        photos: (photos || []).map(([t, e, teinte, commentaire]) => ({ photoId: photo(demoPhoto(t, e, teinte)), commentaire }))
+      });
+    });
+  }
+})();
+
+// ---------- Interface propre à la démo ----------
+(function interfaceDemo() {
+  // Formulaire de connexion pré-rempli
+  const form = document.querySelector("#form-connexion");
+  form.email.value = "demo@graimbouville.fr";
+  form.motdepasse.value = "demonstration";
+  form.querySelector("button[type=submit]").before(
+    h("p", { class: "aide-demo" }, "Version de démonstration : appuyez simplement sur « Se connecter ».")
+  );
+
+  // Bandeau « démo » sous l'en-tête
+  const bandeau = h("div", { class: "bandeau-demo" },
+    h("span", {}, "Démo avec de fausses données. Rien n'est enregistré : tout revient à zéro au rechargement."),
+    h("button", { type: "button", class: "btn primaire petit", onclick: () => ouvrirAvis() }, "💬 Donner mon avis")
+  );
+  document.querySelector(".entete").after(bandeau);
+
+  // Commentaires claude.ai (disponibles pour le propriétaire de la page)
+  let commentaires = null;
+  if (window.claude && typeof window.claude.use === "function") {
+    window.claude.use("comments").then((c) => { commentaires = c; }).catch(() => {});
+  }
+
+  const RUBRIQUES = { depenses: "Dépenses", contacts: "Contacts", coffre: "Coffre-fort", maison: "Maison", general: "Général / autre" };
+  let brouillon = "";
+
+  function ouvrirAvis() {
+    const dlg = document.querySelector("#modale");
+    const zone = h("textarea", { id: "avis-texte", rows: 5, maxlength: 3000, placeholder: "Ce qui vous plaît, ce qui manque, ce qui n'est pas clair…" });
+    zone.value = brouillon;
+    zone.addEventListener("input", () => { brouillon = zone.value; });
+    const qui = h("input", { id: "avis-qui", type: "text", placeholder: "ex : Maman", autocomplete: "off" });
+    const sujet = h("select", { id: "avis-sujet" }, Object.entries(RUBRIQUES).map(([k, v]) => h("option", { value: k }, v)));
+    sujet.value = RUBRIQUES[etat.route] ? etat.route : "general";
+    const message = h("p", { class: "erreur", hidden: true });
+
+    const texteFinal = () => {
+      const t = zone.value.trim();
+      if (!t) return "";
+      return `[${RUBRIQUES[sujet.value]}]${qui.value.trim() ? " " + qui.value.trim() + " :" : ""} ${t}`;
+    };
+    const exiger = () => {
+      const t = texteFinal();
+      if (!t) { message.textContent = "Écrivez d'abord votre remarque."; message.hidden = false; }
+      return t;
+    };
+
+    const btnPublier = h("button", {
+      type: "button", class: "btn primaire",
+      onclick: async () => {
+        const t = exiger(); if (!t) return;
+        btnPublier.disabled = true; btnPublier.textContent = "Envoi…";
+        try {
+          const ancre = await commentaires.anchorFor(document.querySelector("#titre-page"));
+          await commentaires.create({ anchor: ancre, text: t });
+          brouillon = "";
+          dlg.close();
+          toast("Avis enregistré ✓ Merci !");
+        } catch (e) {
+          const code = e && e.code;
+          message.textContent = code === "consent_required"
+            ? "L'avis n'a pas été publié : autorisez les commentaires pour cette page, puis réessayez."
+            : "Impossible de publier l'avis ici. Utilisez « Copier le texte » et envoyez-le par SMS ou email.";
+          message.hidden = false;
+          if (code === "forbidden" || code === "not_granted") btnPublier.hidden = true;
+        } finally {
+          btnPublier.disabled = false; btnPublier.textContent = "Publier l'avis";
+        }
+      }
+    }, "Publier l'avis");
+    btnPublier.hidden = !commentaires;
+
+    const btnCopier = h("button", {
+      type: "button", class: commentaires ? "btn secondaire" : "btn primaire",
+      onclick: () => { const t = exiger(); if (t) copier(t, "Texte"); }
+    }, "Copier le texte");
+
+    dlg.replaceChildren(h("div", { class: "formulaire" },
+      h("div", { class: "formulaire-entete" },
+        h("h2", {}, "Votre avis sur l'application"),
+        h("button", { type: "button", class: "btn-icone", "aria-label": "Fermer", onclick: () => dlg.close() }, "✕")
+      ),
+      h("div", { class: "formulaire-corps" },
+        h("label", { class: "champ", for: "avis-qui" }, h("span", { class: "label" }, "Votre prénom"), qui),
+        h("label", { class: "champ", for: "avis-sujet" }, h("span", { class: "label" }, "Ça concerne"), sujet),
+        h("label", { class: "champ", for: "avis-texte" }, h("span", { class: "label" }, "Votre remarque ou idée"), zone),
+        h("p", { class: "discret" }, commentaires
+          ? "« Publier l'avis » l'ajoute en commentaire sur cette page, lisible ensuite pour faire évoluer l'application."
+          : "Copiez le texte puis envoyez-le par SMS ou email à la personne qui vous a montré l'application.")
+      ),
+      message,
+      h("div", { class: "formulaire-pied" }, h("span", { class: "espace" }), btnCopier, btnPublier)
+    ));
+    dlg.showModal();
+  }
+})();
+
+
+// ===================== Application (copie de site/js/app.js) =====================
+// =====================================================================
+//  GRAIMBOUVILLE — Application familiale de gestion de la maison
+//  Firebase : Authentication (email / mot de passe) + Cloud Firestore
+//  Les photos sont compressées sur le téléphone puis stockées dans
+//  Firestore (collection "photos") : aucun service payant n'est requis.
+// =====================================================================
+
+// ---------------------------------------------------------------------
+//  Listes de référence
+// ---------------------------------------------------------------------
+const CATEGORIES = ["Assurance", "Réparations", "Électricité", "Eau", "Achats divers / courses"];
+const ICONES_CATEGORIE = {
+  "Assurance": "🛡️", "Réparations": "🔧", "Électricité": "💡", "Eau": "💧", "Achats divers / courses": "🛒"
+};
+const SPECIALITES = [
+  "Plombier", "Couvreur", "Électricien", "Maçon", "Chauffagiste", "Menuisier",
+  "Serrurier", "Peintre", "Jardinier / paysagiste", "Ramoneur", "Vidange fosse septique", "Homme toutes mains"
+];
+const TYPES_CONTACT = {
+  artisan: { libelle: "Artisans", icone: "🛠️", champSpecialite: "Spécialité", exemple: "ex : Plombier" },
+  voisin: { libelle: "Voisins", icone: "🏡", champSpecialite: "Lien / rôle", exemple: "ex : Voisin de droite, gardien" },
+  urgence: { libelle: "Secours", icone: "🚨", champSpecialite: "Service", exemple: "ex : Médecin, mairie, hôpital" }
+};
+const URGENCES_NATIONALES = [
+  { nom: "SAMU", tel: "15" },
+  { nom: "Police / Gendarmerie", tel: "17" },
+  { nom: "Pompiers", tel: "18" },
+  { nom: "Urgence européen", tel: "112" },
+  { nom: "Urgence gaz (GRDF)", tel: "0800473333" },
+  { nom: "Dépannage électricité Enedis (76)", tel: "0972675076" }
+];
+const TYPES_COFFRE = {
+  acces: { libelle: "Identifiants", icone: "🔑" },
+  contrat: { libelle: "Contrats", icone: "📄" },
+  banque: { libelle: "Banque", icone: "🏦" }
+};
+const TYPES_CONTRAT = ["Assurance", "Électricité", "Eau", "Internet / Box", "Gaz / Fioul", "Autre"];
+const TYPES_PROCEDURE = {
+  arrivee: { libelle: "Arrivée", icone: "🔓", vide: "Ajoutez les étapes pour ouvrir la maison (eau, électricité, chauffage…)." },
+  depart: { libelle: "Départ", icone: "🔒", vide: "Ajoutez les étapes pour fermer la maison (couper l'eau, volets, vannes…)." },
+  repere: { libelle: "Repères", icone: "📍", vide: "Notez où se trouvent les choses importantes (robinet d'arrêt, tableau électrique, purge du chauffe-eau…)." }
+};
+
+// ---------------------------------------------------------------------
+//  Petits utilitaires
+// ---------------------------------------------------------------------
+const $ = (sel) => document.querySelector(sel);
+
+/** Crée un élément HTML de façon sûre (le texte n'est jamais interprété comme du HTML). */
+function h(tag, attrs, ...enfants) {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v === undefined || v === null || v === false) continue;
+    if (k.startsWith("on") && typeof v === "function") n.addEventListener(k.slice(2), v);
+    else if (k === "class") n.className = v;
+    else if (k === "value") n.value = v;
+    else if (k === "checked" || k === "disabled" || k === "hidden" || k === "required" || k === "selected") n[k] = !!v;
+    else n.setAttribute(k, v === true ? "" : String(v));
+  }
+  for (const e of enfants.flat(Infinity)) {
+    if (e === null || e === undefined || e === false) continue;
+    n.append(e instanceof Node ? e : String(e));
+  }
+  return n;
+}
+
+const formatEuro = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" });
+const euros = (n) => formatEuro.format(Number(n) || 0);
+
+function dateDepuisISO(iso) {
+  const [a, m, j] = String(iso || "").split("-").map(Number);
+  return a ? new Date(a, (m || 1) - 1, j || 1) : null;
+}
+function dateLisible(iso) {
+  const d = dateDepuisISO(iso);
+  return d ? d.toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }) : "—";
+}
+function moisLisible(cle) {
+  const d = dateDepuisISO(cle + "-01");
+  if (!d) return "Sans date";
+  const t = d.toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
+  return t.charAt(0).toUpperCase() + t.slice(1);
+}
+function aujourdhui() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+const telLien = (t) => "tel:" + String(t || "").replace(/[^\d+]/g, "");
+function telLisible(t) {
+  const brut = String(t || "").replace(/\s/g, "");
+  if (/^0\d{9}$/.test(brut)) return brut.replace(/(\d{2})(?=\d)/g, "$1 ");
+  return t || "";
+}
+function ibanLisible(i) {
+  return String(i || "").replace(/\s/g, "").toUpperCase().replace(/(.{4})(?=.)/g, "$1 ");
+}
+function ibanMasque(i) {
+  const brut = String(i || "").replace(/\s/g, "").toUpperCase();
+  if (brut.length < 8) return "••••";
+  return brut.slice(0, 4) + " •••• •••• " + brut.slice(-4);
+}
+function lireMontant(texte) {
+  const n = Number(String(texte || "").replace(/\s/g, "").replace(",", "."));
+  return Number.isFinite(n) ? Math.round(n * 100) / 100 : NaN;
+}
+function stockageLire(cle) { try { return localStorage.getItem(cle); } catch { return null; } }
+function stockageEcrire(cle, v) { try { localStorage.setItem(cle, v); } catch { /* ignoré */ } }
+
+let minuteurToast;
+function toast(message, erreur = false) {
+  const t = $("#toast");
+  // Quand une fenêtre est ouverte, le message doit s'afficher par-dessus
+  const modale = $("#modale");
+  const parent = modale.open ? modale : document.body;
+  if (t.parentNode !== parent) parent.append(t);
+  t.textContent = message;
+  t.className = "visible" + (erreur ? " erreur" : "");
+  clearTimeout(minuteurToast);
+  minuteurToast = setTimeout(() => { t.className = ""; }, erreur ? 5000 : 2500);
+}
+
+async function copier(texte, quoi = "Copié") {
+  try {
+    await navigator.clipboard.writeText(texte);
+    toast(quoi + " dans le presse-papiers ✓");
+  } catch {
+    // Solution de secours pour les anciens navigateurs
+    const zone = h("textarea", { value: texte, readonly: true, style: "position:fixed;opacity:0" });
+    document.body.append(zone);
+    zone.select();
+    try { document.execCommand("copy"); toast(quoi + " ✓"); } catch { toast("Copie impossible", true); }
+    zone.remove();
+  }
+}
+
+/** Fenêtre de confirmation intégrée (remplace confirm() du navigateur). */
+function confirmer(message, libelleOk = "Supprimer") {
+  return new Promise((repondre) => {
+    const dlg = h("dialog", { class: "confirmation" });
+    const fin = (v) => { dlg.close(); dlg.remove(); repondre(v); };
+    dlg.append(
+      h("p", {}, message),
+      h("div", { class: "rangee-droite" },
+        h("button", { type: "button", class: "btn secondaire", onclick: () => fin(false) }, "Annuler"),
+        h("button", { type: "button", class: "btn danger", onclick: () => fin(true) }, libelleOk)
+      )
+    );
+    dlg.addEventListener("cancel", (e) => { e.preventDefault(); fin(false); });
+    document.body.append(dlg);
+    dlg.showModal();
+  });
+}
+
+function messageErreur(err) {
+  const code = err && err.code ? String(err.code) : "";
+  const messages = {
+    "auth/invalid-credential": "Email ou mot de passe incorrect.",
+    "auth/wrong-password": "Email ou mot de passe incorrect.",
+    "auth/user-not-found": "Email ou mot de passe incorrect.",
+    "auth/invalid-email": "Adresse email invalide.",
+    "auth/user-disabled": "Ce compte a été désactivé.",
+    "auth/too-many-requests": "Trop de tentatives. Réessayez dans quelques minutes.",
+    "auth/network-request-failed": "Pas de connexion internet.",
+    "auth/missing-email": "Saisissez d'abord votre adresse email.",
+    "permission-denied": "Accès refusé : ce compte n'est pas autorisé.",
+    "unavailable": "Serveur injoignable, vérifiez la connexion.",
+    "invalid-argument": "Données invalides (photo trop lourde ?)."
+  };
+  return messages[code] || (err && err.message) || "Erreur inconnue";
+}
+
+// ---------------------------------------------------------------------
+//  Firebase
+// ---------------------------------------------------------------------
+const configOK = firebaseConfig && firebaseConfig.apiKey && !String(firebaseConfig.apiKey).startsWith("A_REMPLACER");
+let auth = null;
+let db = null;
+if (configOK) {
+  const appFirebase = initializeApp(firebaseConfig);
+  auth = getAuth(appFirebase);
+  try {
+    // Cache local : l'application fonctionne même sans réseau à la maison
+    db = initializeFirestore(appFirebase, {
+      localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+    });
+  } catch {
+    db = initializeFirestore(appFirebase, {});
+  }
+}
+
+/**
+ * Lance une écriture Firestore. Hors connexion, Firestore garde l'écriture
+ * en attente et la synchronise plus tard : on n'attend donc pas plus de 2,5 s.
+ */
+function ecrire(promesse) {
+  const suivie = promesse.catch((err) => {
+    console.error(err);
+    toast("Erreur d'enregistrement : " + messageErreur(err), true);
+    err._signale = true;
+    throw err;
+  });
+  return Promise.race([suivie, new Promise((ok) => setTimeout(ok, 2500))]);
+}
+
+const emailCourant = () => (auth && auth.currentUser && auth.currentUser.email) || "";
+
+// ---------------------------------------------------------------------
+//  État de l'application
+// ---------------------------------------------------------------------
+const etat = {
+  route: "depenses",
+  depenses: [], contacts: [], coffre: [], procedures: [],
+  charge: { depenses: false, contacts: false, coffre: false, procedures: false },
+  filtres: { categorie: "", payeur: "", annee: "" },
+  ongletContacts: "artisan",
+  ongletCoffre: "acces",
+  ongletMaison: "arrivee",
+  recherche: "",
+  reveles: new Set(),     // champs secrets actuellement affichés en clair
+  coches: new Set(),      // étapes cochées pendant une procédure (non enregistré)
+  desabonnements: []
+};
+
+// ---------------------------------------------------------------------
+//  Photos (compression + lecture)
+// ---------------------------------------------------------------------
+const cachePhotos = new Map();
+
+async function compresserImage(fichier, dimMax = 1400, tailleMax = 650000) {
+  const url = URL.createObjectURL(fichier);
+  try {
+    const img = await new Promise((ok, ko) => {
+      const i = new Image();
+      i.onload = () => ok(i);
+      i.onerror = () => ko(new Error("Format d'image non reconnu."));
+      i.src = url;
+    });
+    let dim = dimMax;
+    let qualite = 0.78;
+    let resultat = "";
+    for (let essai = 0; essai < 7; essai++) {
+      const ratio = Math.min(1, dim / Math.max(img.naturalWidth, img.naturalHeight));
+      const l = Math.max(1, Math.round(img.naturalWidth * ratio));
+      const ht = Math.max(1, Math.round(img.naturalHeight * ratio));
+      const canvas = document.createElement("canvas");
+      canvas.width = l;
+      canvas.height = ht;
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, l, ht);
+      ctx.drawImage(img, 0, 0, l, ht);
+      resultat = canvas.toDataURL("image/jpeg", qualite);
+      if (resultat.length <= tailleMax) return resultat;
+      dim = Math.round(dim * 0.8);
+      qualite = Math.max(0.5, qualite - 0.07);
+    }
+    if (resultat.length > 950000) throw new Error("Photo trop lourde, essayez-en une autre.");
+    return resultat;
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
+async function chargerPhoto(id) {
+  if (!id) return null;
+  if (cachePhotos.has(id)) return cachePhotos.get(id);
+  const snap = await getDoc(doc(db, "photos", id));
+  const data = snap.exists() ? snap.data().data : null;
+  if (data) cachePhotos.set(id, data);
+  return data;
+}
+
+/** Image qui se charge toute seule depuis Firestore. */
+function imagePhoto(id, legende = "", classe = "miniature") {
+  const img = h("img", { class: classe + " en-chargement", alt: legende || "Photo" });
+  img.addEventListener("click", (e) => { e.stopPropagation(); if (img.src) ouvrirVisionneuse(img.src, legende); });
+  chargerPhoto(id)
+    .then((data) => {
+      img.classList.remove("en-chargement");
+      if (data) img.src = data;
+      else img.replaceWith(h("span", { class: "photo-absente" }, "Photo introuvable"));
+    })
+    .catch(() => {
+      img.classList.remove("en-chargement");
+      img.replaceWith(h("span", { class: "photo-absente" }, "Photo indisponible hors connexion"));
+    });
+  return img;
+}
+
+function enregistrerNouvellePhoto(dataUrl) {
+  const ref = doc(collection(db, "photos"));
+  cachePhotos.set(ref.id, dataUrl);
+  const promesse = ecrire(setDoc(ref, { data: dataUrl, creePar: emailCourant(), creeLe: serverTimestamp() }));
+  return { id: ref.id, promesse };
+}
+function supprimerPhoto(id) {
+  if (!id) return;
+  cachePhotos.delete(id);
+  ecrire(deleteDoc(doc(db, "photos", id))).catch(() => {});
+}
+
+function ouvrirVisionneuse(src, legende) {
+  const v = $("#visionneuse");
+  v.querySelector("img").src = src;
+  v.querySelector(".legende").textContent = legende || "";
+  v.hidden = false;
+}
+function fermerVisionneuse() {
+  const v = $("#visionneuse");
+  v.hidden = true;
+  v.querySelector("img").removeAttribute("src");
+}
+
+// ---------------------------------------------------------------------
+//  Formulaire générique (fenêtre modale)
+// ---------------------------------------------------------------------
+/**
+ * champs : [{ nom, label, type, options, requis, placeholder, aide, suggestions }]
+ * types : text, email, tel, url, date, montant, textarea, select, choix, secret, photo, photos
+ */
+function ouvrirFormulaire({ titre, champs, valeurs = {}, onValider, onSupprimer, texteSupprimer }) {
+  const dlg = $("#modale");
+  const lecteurs = {};
+  const form = h("form", { class: "formulaire", novalidate: true });
+  form.append(h("div", { class: "formulaire-entete" },
+    h("h2", {}, titre),
+    h("button", { type: "button", class: "btn-icone", "aria-label": "Fermer", onclick: () => dlg.close() }, "✕")
+  ));
+  const corps = h("div", { class: "formulaire-corps" });
+  form.append(corps);
+
+  for (const c of champs) {
+    const v = valeurs[c.nom];
+    let controle;
+
+    if (c.type === "photo") {
+      const champ = champPhoto(v);
+      lecteurs[c.nom] = champ.lire;
+      corps.append(h("div", { class: "champ" }, h("span", { class: "label" }, c.label), champ.noeud));
+      continue;
+    }
+    if (c.type === "photos") {
+      const champ = champPhotosCommentees(v || []);
+      lecteurs[c.nom] = champ.lire;
+      corps.append(h("div", { class: "champ" }, h("span", { class: "label" }, c.label), champ.noeud));
+      continue;
+    }
+    if (c.type === "choix") {
+      const groupe = h("div", { class: "segments" });
+      const valeurInitiale = v || c.options[0];
+      c.options.forEach((opt) => {
+        groupe.append(h("label", {},
+          h("input", { type: "radio", name: c.nom, value: opt, checked: opt === valeurInitiale }),
+          h("span", {}, opt)
+        ));
+      });
+      lecteurs[c.nom] = () => (form.querySelector(`input[name="${c.nom}"]:checked`) || {}).value || "";
+      corps.append(h("div", { class: "champ" }, h("span", { class: "label" }, c.label), groupe));
+      continue;
+    }
+
+    if (c.type === "textarea") {
+      controle = h("textarea", { name: c.nom, rows: c.lignes || 3, placeholder: c.placeholder || "" });
+      controle.value = v || "";
+    } else if (c.type === "select") {
+      controle = h("select", { name: c.nom },
+        c.options.map((o) => {
+          const val = typeof o === "string" ? o : o.valeur;
+          const lib = typeof o === "string" ? o : o.libelle;
+          return h("option", { value: val }, lib);
+        })
+      );
+      if (v) controle.value = v;
+    } else if (c.type === "montant") {
+      controle = h("input", {
+        type: "text", inputmode: "decimal", name: c.nom, placeholder: "0,00", autocomplete: "off",
+        value: v !== undefined && v !== null && v !== "" ? (Number.isFinite(Number(v)) ? Number(v).toFixed(2) : String(v)).replace(".", ",") : ""
+      });
+    } else if (c.type === "secret") {
+      const input = h("input", { type: "password", name: c.nom, autocomplete: "new-password", value: v || "", placeholder: c.placeholder || "" });
+      const oeil = h("button", {
+        type: "button", class: "btn-icone petit", "aria-label": "Afficher",
+        onclick: () => { input.type = input.type === "password" ? "text" : "password"; }
+      }, "👁");
+      controle = input;
+      lecteurs[c.nom] = () => input.value.trim();
+      corps.append(h("label", { class: "champ" }, h("span", { class: "label" }, c.label + (c.requis ? " *" : "")),
+        h("div", { class: "avec-bouton" }, input, oeil)));
+      continue;
+    } else {
+      const attrs = {
+        type: c.type || "text", name: c.nom, value: v || "", placeholder: c.placeholder || "",
+        autocomplete: "off"
+      };
+      if (c.type === "url") attrs.inputmode = "url";
+      if (c.suggestions) attrs.list = "liste-" + c.nom;
+      controle = h("input", attrs);
+    }
+
+    lecteurs[c.nom] = () => controle.value.trim();
+    const libelle = h("label", { class: "champ" },
+      h("span", { class: "label" }, c.label + (c.requis ? " *" : "")),
+      controle,
+      c.aide ? h("small", { class: "aide" }, c.aide) : null
+    );
+    if (c.suggestions) {
+      libelle.append(h("datalist", { id: "liste-" + c.nom }, c.suggestions.map((s) => h("option", { value: s }))));
+    }
+    corps.append(libelle);
+  }
+
+  const erreur = h("p", { class: "erreur", hidden: true });
+  const btnValider = h("button", { type: "submit", class: "btn primaire" }, "Enregistrer");
+  const pied = h("div", { class: "formulaire-pied" });
+  if (onSupprimer) {
+    pied.append(h("button", {
+      type: "button", class: "btn danger",
+      onclick: async () => {
+        if (!(await confirmer(texteSupprimer || "Supprimer définitivement cet élément ?"))) return;
+        try {
+          await onSupprimer();
+          dlg.close();
+          toast("Supprimé");
+        } catch (e) {
+          if (!e._signale) toast(messageErreur(e), true);
+        }
+      }
+    }, "Supprimer"));
+  }
+  pied.append(h("span", { class: "espace" }));
+  pied.append(h("button", { type: "button", class: "btn secondaire", onclick: () => dlg.close() }, "Annuler"));
+  pied.append(btnValider);
+  form.append(erreur, pied);
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const valeursLues = {};
+    for (const [nom, lire] of Object.entries(lecteurs)) valeursLues[nom] = lire();
+    const manquants = champs.filter((c) => c.requis && (valeursLues[c.nom] === "" || valeursLues[c.nom] === undefined));
+    if (manquants.length) {
+      erreur.textContent = "Champ obligatoire : " + manquants.map((c) => c.label).join(", ");
+      erreur.hidden = false;
+      return;
+    }
+    erreur.hidden = true;
+    btnValider.disabled = true;
+    btnValider.textContent = "Enregistrement…";
+    try {
+      await onValider(valeursLues);
+      dlg.close();
+      toast("Enregistré ✓");
+    } catch (err) {
+      erreur.textContent = err._signale ? "L'enregistrement a échoué." : messageErreur(err);
+      erreur.hidden = false;
+    } finally {
+      btnValider.disabled = false;
+      btnValider.textContent = "Enregistrer";
+    }
+  });
+
+  dlg.replaceChildren(form);
+  dlg.showModal();
+  corps.scrollTop = 0;
+}
+
+/** Champ « une seule photo » (ticket de caisse, facture). */
+function champPhoto(idInitial) {
+  let etatPhoto = { action: "garder" };
+  let aUnePhoto = !!idInitial;
+  const apercu = h("div", { class: "apercu-photo" });
+  const input = h("input", { type: "file", accept: "image/*", hidden: true });
+  const btnAjout = h("button", { type: "button", class: "btn secondaire" });
+  const btnRetirer = h("button", { type: "button", class: "btn lien danger" }, "Retirer la photo");
+
+  function majBoutons() {
+    btnAjout.textContent = aUnePhoto ? "📷 Remplacer la photo" : "📷 Ajouter une photo";
+    btnRetirer.hidden = !aUnePhoto;
+  }
+  function montrer(src) {
+    apercu.replaceChildren();
+    if (src) {
+      const img = h("img", { src, class: "apercu", alt: "Aperçu" });
+      img.addEventListener("click", () => ouvrirVisionneuse(src, ""));
+      apercu.append(img);
+    }
+  }
+  if (idInitial) apercu.append(imagePhoto(idInitial, "", "apercu"));
+  majBoutons();
+
+  btnAjout.addEventListener("click", () => input.click());
+  btnRetirer.addEventListener("click", () => {
+    etatPhoto = { action: "supprimer" };
+    aUnePhoto = false;
+    montrer(null);
+    majBoutons();
+  });
+  input.addEventListener("change", async () => {
+    const fichier = input.files && input.files[0];
+    if (!fichier) return;
+    btnAjout.disabled = true;
+    btnAjout.textContent = "Traitement de la photo…";
+    try {
+      const data = await compresserImage(fichier);
+      etatPhoto = { action: "nouvelle", dataUrl: data };
+      aUnePhoto = true;
+      montrer(data);
+    } catch (e) {
+      toast(e.message, true);
+    } finally {
+      btnAjout.disabled = false;
+      input.value = "";
+      majBoutons();
+    }
+  });
+
+  return {
+    noeud: h("div", { class: "champ-photo" }, apercu, h("div", { class: "rangee" }, btnAjout, btnRetirer), input),
+    lire: () => etatPhoto
+  };
+}
+
+/** Champ « plusieurs photos, chacune avec un commentaire » (procédures). */
+function champPhotosCommentees(initiales) {
+  const elements = initiales.map((p) => ({ photoId: p.photoId, commentaire: p.commentaire || "" }));
+  const supprimes = [];
+  const liste = h("div", { class: "liste-photos-form" });
+  const input = h("input", { type: "file", accept: "image/*", multiple: true, hidden: true });
+  const btnAjout = h("button", { type: "button", class: "btn secondaire" }, "📷 Ajouter des photos");
+
+  function dessiner() {
+    liste.replaceChildren();
+    elements.forEach((el, i) => {
+      const image = el.dataUrl
+        ? h("img", { src: el.dataUrl, class: "miniature", alt: "" })
+        : imagePhoto(el.photoId, el.commentaire);
+      const zone = h("textarea", { rows: 2, placeholder: "Commentaire : ex. « Le robinet est derrière la trappe, sous l'évier »" });
+      zone.value = el.commentaire;
+      zone.addEventListener("input", () => { el.commentaire = zone.value; });
+      liste.append(h("div", { class: "photo-form" },
+        image,
+        h("div", { class: "photo-form-texte" },
+          zone,
+          h("button", {
+            type: "button", class: "btn lien danger",
+            onclick: () => {
+              if (el.photoId) supprimes.push(el.photoId);
+              elements.splice(i, 1);
+              dessiner();
+            }
+          }, "Retirer")
+        )
+      ));
+    });
+  }
+  dessiner();
+
+  btnAjout.addEventListener("click", () => input.click());
+  input.addEventListener("change", async () => {
+    const fichiers = [...(input.files || [])];
+    if (!fichiers.length) return;
+    btnAjout.disabled = true;
+    btnAjout.textContent = "Traitement des photos…";
+    for (const f of fichiers) {
+      try {
+        elements.push({ dataUrl: await compresserImage(f), commentaire: "" });
+      } catch (e) {
+        toast(e.message, true);
+      }
+    }
+    input.value = "";
+    btnAjout.disabled = false;
+    btnAjout.textContent = "📷 Ajouter des photos";
+    dessiner();
+  });
+
+  return {
+    noeud: h("div", { class: "champ-photos" }, liste, btnAjout, input),
+    lire: () => ({ elements: elements.map((e) => ({ ...e, commentaire: e.commentaire.trim() })), supprimes })
+  };
+}
+
+// ---------------------------------------------------------------------
+//  Composants d'affichage
+// ---------------------------------------------------------------------
+function chargement() {
+  return h("div", { class: "vide" }, h("div", { class: "rouet" }), "Chargement…");
+}
+function vide(texte) {
+  return h("div", { class: "vide" }, h("p", {}, texte), h("p", { class: "discret" }, "Appuyez sur « + » pour ajouter."));
+}
+function sousOnglets(types, actif, onChange) {
+  return h("div", { class: "sous-onglets" },
+    Object.entries(types).map(([cle, t]) =>
+      h("button", { type: "button", class: cle === actif ? "actif" : "", onclick: () => onChange(cle) }, t.icone + " " + t.libelle)
+    )
+  );
+}
+function filtreSelect(libelle, valeur, options, onChange) {
+  const s = h("select", { "aria-label": libelle, onchange: (e) => onChange(e.target.value) },
+    h("option", { value: "" }, libelle),
+    options.map((o) => h("option", { value: o }, o))
+  );
+  s.value = valeur;
+  if (valeur) s.classList.add("actif");
+  return s;
+}
+
+/** Ligne d'information (avec option secret / copie / lien). */
+function ligneInfo(libelle, valeur, opts = {}) {
+  if (!valeur) return null;
+  const { secret = false, cleSecret = "", copiable = false, lien = null, masque = null, affichage = null } = opts;
+  const revele = secret && etat.reveles.has(cleSecret);
+  let texte;
+  if (secret && !revele) texte = masque ? masque(valeur) : "••••••••";
+  else texte = affichage ? affichage(valeur) : valeur;
+
+  const contenuValeur = lien && (!secret || revele)
+    ? h("a", { href: lien, target: lien.startsWith("http") ? "_blank" : null, rel: "noopener noreferrer" }, texte)
+    : h("span", { class: secret && !revele ? "masque" : "" }, texte);
+
+  const actions = h("span", { class: "actions-ligne" });
+  if (secret) {
+    actions.append(h("button", {
+      type: "button", class: "btn-icone petit", "aria-label": revele ? "Masquer" : "Afficher",
+      onclick: () => basculerSecret(cleSecret)
+    }, revele ? "🙈" : "👁"));
+  }
+  if (copiable) {
+    actions.append(h("button", {
+      type: "button", class: "btn-icone petit", "aria-label": "Copier",
+      onclick: () => copier(valeur, libelle + " copié")
+    }, "📋"));
+  }
+  return h("div", { class: "ligne-info" },
+    h("span", { class: "ligne-libelle" }, libelle),
+    h("span", { class: "ligne-valeur" }, contenuValeur),
+    actions
+  );
+}
+
+const minuteursSecrets = new Map();
+function basculerSecret(cle) {
+  if (etat.reveles.has(cle)) {
+    etat.reveles.delete(cle);
+  } else {
+    etat.reveles.add(cle);
+    clearTimeout(minuteursSecrets.get(cle));
+    // Masquage automatique au bout de 30 secondes
+    minuteursSecrets.set(cle, setTimeout(() => { etat.reveles.delete(cle); afficher(); }, 30000));
+  }
+  afficher();
+}
+
+// =====================================================================
+//  MODULE A — DÉPENSES
+// =====================================================================
+function vueDepenses() {
+  if (!etat.charge.depenses) return chargement();
+  const f = etat.filtres;
+  const payeurs = [...new Set([...PAYEURS, ...etat.depenses.map((d) => d.payeur).filter(Boolean)])];
+  const annees = [...new Set(etat.depenses.map((d) => String(d.date || "").slice(0, 4)).filter(Boolean))].sort().reverse();
+
+  const liste = etat.depenses
+    .filter((d) =>
+      (!f.categorie || d.categorie === f.categorie) &&
+      (!f.payeur || d.payeur === f.payeur) &&
+      (!f.annee || String(d.date || "").startsWith(f.annee)))
+    .sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")) ||
+      ((b.creeLe && b.creeLe.toMillis ? b.creeLe.toMillis() : 0) - (a.creeLe && a.creeLe.toMillis ? a.creeLe.toMillis() : 0)));
+
+  const total = liste.reduce((s, d) => s + (Number(d.montant) || 0), 0);
+  const parPayeur = {};
+  liste.forEach((d) => { parPayeur[d.payeur || "?"] = (parPayeur[d.payeur || "?"] || 0) + (Number(d.montant) || 0); });
+
+  const filtresActifs = f.categorie || f.payeur || f.annee;
+  const barreFiltres = h("div", { class: "filtres" },
+    filtreSelect("Toutes catégories", f.categorie, CATEGORIES, (v) => { f.categorie = v; afficher(); }),
+    filtreSelect("Tous payeurs", f.payeur, payeurs, (v) => { f.payeur = v; afficher(); }),
+    filtreSelect("Toutes années", f.annee, annees, (v) => { f.annee = v; afficher(); }),
+    filtresActifs ? h("button", {
+      type: "button", class: "btn lien",
+      onclick: () => { f.categorie = ""; f.payeur = ""; f.annee = ""; afficher(); }
+    }, "Effacer") : null
+  );
+
+  const resume = h("div", { class: "carte resume" },
+    h("div", { class: "resume-total" },
+      h("span", { class: "discret" }, filtresActifs ? "Total (filtré)" : "Total des dépenses"),
+      h("strong", {}, euros(total)),
+      h("span", { class: "discret" }, liste.length + " dépense" + (liste.length > 1 ? "s" : ""))
+    ),
+    h("div", { class: "resume-payeurs" },
+      Object.entries(parPayeur).map(([p, m]) => h("div", {}, h("span", {}, p), h("strong", {}, euros(m))))
+    )
+  );
+
+  if (!etat.depenses.length) return [vide("Aucune dépense enregistrée pour le moment.")];
+  if (!liste.length) return [barreFiltres, h("div", { class: "vide" }, "Aucune dépense ne correspond à ces filtres.")];
+
+  // Regroupement par mois
+  const groupes = new Map();
+  liste.forEach((d) => {
+    const cle = String(d.date || "").slice(0, 7) || "0000-00";
+    if (!groupes.has(cle)) groupes.set(cle, []);
+    groupes.get(cle).push(d);
+  });
+
+  const blocs = [...groupes.entries()].map(([cle, deps]) =>
+    h("section", { class: "groupe" },
+      h("div", { class: "groupe-titre" },
+        h("span", {}, moisLisible(cle)),
+        h("span", {}, euros(deps.reduce((s, d) => s + (Number(d.montant) || 0), 0)))
+      ),
+      h("div", { class: "carte liste" },
+        deps.map((d) => h("button", { type: "button", class: "ligne-depense", onclick: () => formulaireDepense(d) },
+          h("span", { class: "icone-cat", title: d.categorie }, ICONES_CATEGORIE[d.categorie] || "💶"),
+          h("span", { class: "depense-texte" },
+            h("strong", {}, d.libelle || "(sans intitulé)", d.photoId ? h("span", { class: "trombone", title: "Justificatif joint" }, " 📎") : null),
+            h("small", {}, dateLisible(d.date) + " · " + (d.categorie || "") + " · " + (d.payeur || ""))
+          ),
+          h("span", { class: "montant" }, euros(d.montant))
+        ))
+      )
+    )
+  );
+
+  return [
+    barreFiltres,
+    resume,
+    ...blocs,
+    h("div", { class: "pied-liste" },
+      h("button", { type: "button", class: "btn secondaire", onclick: () => exporterCSV(liste) }, "⬇️ Exporter ces dépenses (tableur)")
+    )
+  ];
+}
+
+function formulaireDepense(dep) {
+  ouvrirFormulaire({
+    titre: dep ? "Modifier la dépense" : "Nouvelle dépense",
+    valeurs: dep ? { ...dep, photo: dep.photoId } : { date: aujourdhui(), payeur: PAYEURS[0], categorie: CATEGORIES[0] },
+    champs: [
+      { nom: "date", label: "Date", type: "date", requis: true },
+      { nom: "libelle", label: "Intitulé / description", requis: true, placeholder: "ex : Réparation fuite toiture" },
+      { nom: "categorie", label: "Catégorie", type: "select", options: CATEGORIES, requis: true },
+      { nom: "montant", label: "Montant (€)", type: "montant", requis: true },
+      { nom: "payeur", label: "Payé par", type: "choix", options: PAYEURS, requis: true },
+      { nom: "photo", label: "Ticket de caisse / facture", type: "photo" },
+      { nom: "notes", label: "Notes (facultatif)", type: "textarea", lignes: 2 }
+    ],
+    onValider: async (v) => {
+      const montant = lireMontant(v.montant);
+      if (!Number.isFinite(montant) || montant < 0) throw new Error("Le montant n'est pas valide (ex : 45,90).");
+      let photoId = dep ? dep.photoId || null : null;
+      const attentes = [];
+      if (v.photo.action === "supprimer" || v.photo.action === "nouvelle") {
+        if (photoId) supprimerPhoto(photoId);
+        photoId = null;
+      }
+      if (v.photo.action === "nouvelle") {
+        const p = enregistrerNouvellePhoto(v.photo.dataUrl);
+        photoId = p.id;
+        attentes.push(p.promesse);
+      }
+      const ref = dep ? doc(db, "depenses", dep.id) : doc(collection(db, "depenses"));
+      const donnees = {
+        date: v.date, libelle: v.libelle, categorie: v.categorie, montant, payeur: v.payeur,
+        notes: v.notes, photoId, modifiePar: emailCourant(), modifieLe: serverTimestamp()
+      };
+      if (!dep) { donnees.creePar = emailCourant(); donnees.creeLe = serverTimestamp(); }
+      attentes.push(ecrire(setDoc(ref, donnees, { merge: true })));
+      await Promise.all(attentes);
+    },
+    onSupprimer: dep ? async () => {
+      supprimerPhoto(dep.photoId);
+      await ecrire(deleteDoc(doc(db, "depenses", dep.id)));
+    } : null,
+    texteSupprimer: "Supprimer cette dépense et son justificatif ?"
+  });
+}
+
+function exporterCSV(liste) {
+  if (window.GRAIMBOUVILLE_DEMO) {
+    toast("Dans la vraie application, ce bouton télécharge un fichier Excel.");
+    return;
+  }
+  const cellule = (v) => '"' + String(v === undefined || v === null ? "" : v).replace(/"/g, '""') + '"';
+  const lignes = [["Date", "Intitulé", "Catégorie", "Montant (€)", "Payé par", "Notes", "Justificatif"].map(cellule).join(";")];
+  liste.forEach((d) => {
+    lignes.push([
+      d.date, d.libelle, d.categorie, String(Number(d.montant) || 0).replace(".", ","),
+      d.payeur, d.notes, d.photoId ? "oui" : "non"
+    ].map(cellule).join(";"));
+  });
+  const blob = new Blob(["﻿" + lignes.join("\r\n")], { type: "text/csv;charset=utf-8" });
+  const lienTelechargement = h("a", { href: URL.createObjectURL(blob), download: `depenses-graimbouville-${aujourdhui()}.csv` });
+  document.body.append(lienTelechargement);
+  lienTelechargement.click();
+  setTimeout(() => { URL.revokeObjectURL(lienTelechargement.href); lienTelechargement.remove(); }, 1000);
+}
+
+// =====================================================================
+//  MODULE B — CONTACTS
+// =====================================================================
+function vueContacts() {
+  if (!etat.charge.contacts) return chargement();
+  const type = etat.ongletContacts;
+  const recherche = etat.recherche.toLowerCase();
+
+  const champRecherche = h("input", {
+    type: "search", class: "recherche", placeholder: "🔍 Rechercher un nom, un métier…", value: etat.recherche,
+    oninput: (e) => {
+      etat.recherche = e.target.value;
+      const pos = e.target.selectionStart;
+      afficher();
+      const nouveau = $(".recherche");
+      if (nouveau) { nouveau.focus(); nouveau.setSelectionRange(pos, pos); }
+    }
+  });
+
+  const correspond = (c) => !recherche ||
+    [c.nom, c.specialite, c.notes, c.telephone, c.adresse].some((x) => String(x || "").toLowerCase().includes(recherche));
+
+  const liste = etat.contacts
+    .filter((c) => (recherche ? true : (c.type || "artisan") === type) && correspond(c))
+    .sort((a, b) => String(a.specialite || "").localeCompare(String(b.specialite || ""), "fr") || String(a.nom || "").localeCompare(String(b.nom || ""), "fr"));
+
+  const cartes = liste.map((c) => carteContact(c));
+  const resultat = [
+    champRecherche,
+    recherche ? h("p", { class: "discret" }, liste.length + " résultat(s) dans tous les contacts") :
+      sousOnglets(TYPES_CONTACT, type, (t) => { etat.ongletContacts = t; afficher(); })
+  ];
+
+  if (!recherche && type === "urgence") {
+    resultat.push(h("section", { class: "groupe" },
+      h("div", { class: "groupe-titre" }, h("span", {}, "Numéros d'urgence")),
+      h("div", { class: "grille-urgences" },
+        URGENCES_NATIONALES.map((u) => h("a", { class: "urgence" + (u.tel.length > 4 ? " long" : ""), href: telLien(u.tel) },
+          h("strong", {}, telLisible(u.tel)), h("span", {}, u.nom)))
+      )
+    ));
+    resultat.push(h("div", { class: "groupe-titre" }, h("span", {}, "Contacts locaux")));
+  }
+
+  if (cartes.length) resultat.push(h("div", { class: "pile" }, cartes));
+  else if (recherche) resultat.push(h("div", { class: "vide" }, "Aucun contact trouvé."));
+  else resultat.push(vide(type === "urgence"
+    ? "Ajoutez les contacts locaux : médecin, mairie, pharmacie de garde…"
+    : "Aucun contact dans cette rubrique."));
+  return resultat;
+}
+
+function carteContact(c) {
+  const t = TYPES_CONTACT[c.type] || TYPES_CONTACT.artisan;
+  return h("div", { class: "carte contact" },
+    h("button", { type: "button", class: "contact-entete", onclick: () => formulaireContact(c) },
+      h("span", { class: "avatar" }, t.icone),
+      h("span", { class: "contact-texte" },
+        h("strong", {}, c.nom),
+        c.specialite ? h("small", {}, c.specialite) : null
+      ),
+      h("span", { class: "chevron" }, "✏️")
+    ),
+    c.adresse ? h("p", { class: "contact-detail" }, "📍 " + c.adresse) : null,
+    c.notes ? h("p", { class: "contact-detail notes" }, c.notes) : null,
+    h("div", { class: "contact-actions" },
+      c.telephone ? h("a", { class: "btn primaire", href: telLien(c.telephone) }, "📞 " + telLisible(c.telephone)) : null,
+      c.telephone2 ? h("a", { class: "btn secondaire", href: telLien(c.telephone2) }, "📞 " + telLisible(c.telephone2)) : null,
+      c.email ? h("a", { class: "btn secondaire", href: "mailto:" + c.email }, "✉️ Email") : null
+    )
+  );
+}
+
+function formulaireContact(c) {
+  const type = c ? c.type || "artisan" : etat.ongletContacts;
+  const t = TYPES_CONTACT[type];
+  ouvrirFormulaire({
+    titre: c ? "Modifier le contact" : "Nouveau contact",
+    valeurs: c || { type },
+    champs: [
+      { nom: "type", label: "Rubrique", type: "select", options: Object.entries(TYPES_CONTACT).map(([k, v]) => ({ valeur: k, libelle: v.icone + " " + v.libelle })) },
+      { nom: "nom", label: "Nom", requis: true, placeholder: "ex : M. Dupont" },
+      { nom: "specialite", label: t.champSpecialite, placeholder: t.exemple, suggestions: type === "artisan" ? SPECIALITES : null },
+      { nom: "telephone", label: "Téléphone", type: "tel", placeholder: "06 12 34 56 78" },
+      { nom: "telephone2", label: "Autre téléphone (facultatif)", type: "tel" },
+      { nom: "email", label: "Email (facultatif)", type: "email" },
+      { nom: "adresse", label: "Adresse (facultatif)" },
+      { nom: "notes", label: "Notes", type: "textarea", placeholder: "ex : Très réactif, a refait la toiture en 2024" }
+    ],
+    onValider: async (v) => {
+      const ref = c ? doc(db, "contacts", c.id) : doc(collection(db, "contacts"));
+      await ecrire(setDoc(ref, { ...v, modifiePar: emailCourant(), modifieLe: serverTimestamp() }, { merge: true }));
+      etat.ongletContacts = v.type;
+    },
+    onSupprimer: c ? () => ecrire(deleteDoc(doc(db, "contacts", c.id))) : null
+  });
+}
+
+// =====================================================================
+//  MODULE C — COFFRE-FORT
+// =====================================================================
+function vueCoffre() {
+  if (!etat.charge.coffre) return chargement();
+  const type = etat.ongletCoffre;
+  const liste = etat.coffre
+    .filter((e) => e.type === type)
+    .sort((a, b) => String(a.titre || "").localeCompare(String(b.titre || ""), "fr"));
+
+  const cartes = liste.map((e) => {
+    let lignes = [];
+    if (type === "acces") {
+      lignes = [
+        ligneInfo("Site", e.url, { lien: /^https?:\/\//i.test(e.url || "") ? e.url : "https://" + e.url }),
+        ligneInfo("Identifiant", e.identifiant, { copiable: true }),
+        ligneInfo("Mot de passe", e.motDePasse, { secret: true, cleSecret: e.id + ":mdp", copiable: true }),
+        ligneInfo("Notes", e.notes)
+      ];
+    } else if (type === "contrat") {
+      lignes = [
+        ligneInfo("Compagnie", e.compagnie),
+        ligneInfo("N° de contrat", e.numeroContrat, { copiable: true }),
+        ligneInfo("Réf. client", e.referenceClient, { copiable: true }),
+        ligneInfo("N° de compteur / PDL", e.compteur, { copiable: true }),
+        ligneInfo("Contact", e.contact, { lien: /^[\d\s+.]+$/.test(e.contact || "") ? telLien(e.contact) : null }),
+        ligneInfo("Notes", e.notes)
+      ];
+    } else {
+      lignes = [
+        ligneInfo("Titulaire", e.titulaire),
+        ligneInfo("Banque", e.banque),
+        ligneInfo("IBAN", e.iban, { secret: true, cleSecret: e.id + ":iban", copiable: true, masque: ibanMasque, affichage: ibanLisible }),
+        ligneInfo("BIC", e.bic, { copiable: true }),
+        ligneInfo("Notes", e.notes)
+      ];
+    }
+    const sousTitre = type === "contrat" ? e.categorie : null;
+    return h("div", { class: "carte coffre" },
+      h("button", { type: "button", class: "coffre-entete", onclick: () => formulaireCoffre(type, e) },
+        h("span", { class: "contact-texte" }, h("strong", {}, e.titre), sousTitre ? h("small", {}, sousTitre) : null),
+        h("span", { class: "chevron" }, "✏️")
+      ),
+      lignes
+    );
+  });
+
+  return [
+    h("div", { class: "bandeau info" }, "🔒 Données sensibles : ne partagez pas votre écran. Les mots de passe se masquent seuls après 30 s."),
+    sousOnglets(TYPES_COFFRE, type, (t) => { etat.ongletCoffre = t; afficher(); }),
+    cartes.length ? h("div", { class: "pile" }, cartes) : vide({
+      acces: "Aucun identifiant. Ajoutez vos espaces clients (électricité, eau, box internet…).",
+      contrat: "Aucun contrat. Ajoutez l'assurance, l'électricité, l'eau, internet…",
+      banque: "Aucun RIB. Ajoutez le compte dédié à la maison."
+    }[type])
+  ];
+}
+
+function formulaireCoffre(type, e) {
+  const config = {
+    acces: {
+      titre: "identifiant",
+      champs: [
+        { nom: "titre", label: "Nom du service", requis: true, placeholder: "ex : EDF, Orange, Veolia" },
+        { nom: "url", label: "Adresse de connexion (URL)", type: "url", placeholder: "https://…" },
+        { nom: "identifiant", label: "Identifiant / login" },
+        { nom: "motDePasse", label: "Mot de passe", type: "secret" },
+        { nom: "notes", label: "Notes", type: "textarea", lignes: 2 }
+      ]
+    },
+    contrat: {
+      titre: "contrat",
+      champs: [
+        { nom: "titre", label: "Intitulé", requis: true, placeholder: "ex : Assurance habitation" },
+        { nom: "categorie", label: "Type", type: "select", options: TYPES_CONTRAT },
+        { nom: "compagnie", label: "Compagnie / fournisseur", placeholder: "ex : MAIF, EDF, Orange" },
+        { nom: "numeroContrat", label: "N° de contrat" },
+        { nom: "referenceClient", label: "Référence client / n° de compte" },
+        { nom: "compteur", label: "N° de compteur / PDL / PCE (facultatif)" },
+        { nom: "contact", label: "Contact (téléphone, email…)" },
+        { nom: "notes", label: "Notes", type: "textarea", lignes: 2, placeholder: "ex : échéance annuelle en mars" }
+      ]
+    },
+    banque: {
+      titre: "RIB",
+      champs: [
+        { nom: "titre", label: "Nom du compte", requis: true, placeholder: "ex : Compte maison" },
+        { nom: "titulaire", label: "Titulaire" },
+        { nom: "banque", label: "Banque" },
+        { nom: "iban", label: "IBAN", placeholder: "FR76 …" },
+        { nom: "bic", label: "BIC" },
+        { nom: "notes", label: "Notes", type: "textarea", lignes: 2 }
+      ]
+    }
+  }[type];
+
+  ouvrirFormulaire({
+    titre: (e ? "Modifier : " : "Nouveau ") + config.titre,
+    valeurs: e || {},
+    champs: config.champs,
+    onValider: async (v) => {
+      if (v.iban) v.iban = v.iban.replace(/\s/g, "").toUpperCase();
+      if (v.bic) v.bic = v.bic.replace(/\s/g, "").toUpperCase();
+      const ref = e ? doc(db, "coffre", e.id) : doc(collection(db, "coffre"));
+      await ecrire(setDoc(ref, { ...v, type, modifiePar: emailCourant(), modifieLe: serverTimestamp() }, { merge: true }));
+    },
+    onSupprimer: e ? () => ecrire(deleteDoc(doc(db, "coffre", e.id))) : null
+  });
+}
+
+// =====================================================================
+//  MODULE D — PROCÉDURES (Arrivée / Départ / Repères)
+// =====================================================================
+function etapesDuType(type) {
+  return etat.procedures
+    .filter((p) => p.type === type)
+    .sort((a, b) => (Number(a.ordre) || 0) - (Number(b.ordre) || 0));
+}
+
+function vueMaison() {
+  if (!etat.charge.procedures) return chargement();
+  const type = etat.ongletMaison;
+  const etapes = etapesDuType(type);
+  const estProcedure = type !== "repere";
+  const nbCoches = etapes.filter((e) => etat.coches.has(e.id)).length;
+
+  const resultat = [sousOnglets(TYPES_PROCEDURE, type, (t) => { etat.ongletMaison = t; afficher(); })];
+  if (!etapes.length) {
+    resultat.push(vide(TYPES_PROCEDURE[type].vide));
+    return resultat;
+  }
+
+  if (estProcedure) {
+    resultat.push(h("div", { class: "progression" },
+      h("div", { class: "barre" }, h("div", { style: `width:${Math.round((nbCoches / etapes.length) * 100)}%` })),
+      h("span", {}, `${nbCoches} / ${etapes.length} étape${etapes.length > 1 ? "s" : ""}`),
+      nbCoches ? h("button", {
+        type: "button", class: "btn lien",
+        onclick: () => { etapes.forEach((e) => etat.coches.delete(e.id)); afficher(); }
+      }, "Tout décocher") : null
+    ));
+  }
+
+  resultat.push(h("div", { class: "pile" }, etapes.map((e, i) => {
+    const coche = etat.coches.has(e.id);
+    return h("article", { class: "carte etape" + (coche ? " faite" : "") },
+      h("div", { class: "etape-entete" },
+        estProcedure
+          ? h("button", {
+            type: "button", class: "case" + (coche ? " cochee" : ""), "aria-label": coche ? "Décocher" : "Marquer comme fait",
+            onclick: () => { coche ? etat.coches.delete(e.id) : etat.coches.add(e.id); afficher(); }
+          }, coche ? "✓" : String(i + 1))
+          : h("span", { class: "case repere" }, "📍"),
+        h("h3", {}, e.titre),
+        h("div", { class: "etape-outils" },
+          h("button", { type: "button", class: "btn-icone petit", "aria-label": "Monter", disabled: i === 0, onclick: () => deplacerEtape(etapes, i, -1) }, "↑"),
+          h("button", { type: "button", class: "btn-icone petit", "aria-label": "Descendre", disabled: i === etapes.length - 1, onclick: () => deplacerEtape(etapes, i, 1) }, "↓"),
+          h("button", { type: "button", class: "btn-icone petit", "aria-label": "Modifier", onclick: () => formulaireEtape(type, e) }, "✏️")
+        )
+      ),
+      e.description ? h("p", { class: "etape-description" }, e.description) : null,
+      (e.photos || []).length ? h("div", { class: "etape-photos" },
+        e.photos.map((p) => h("figure", {},
+          imagePhoto(p.photoId, p.commentaire, "photo-etape"),
+          p.commentaire ? h("figcaption", {}, p.commentaire) : null
+        ))
+      ) : null
+    );
+  })));
+  return resultat;
+}
+
+async function deplacerEtape(etapes, i, sens) {
+  const a = etapes[i];
+  const b = etapes[i + sens];
+  if (!a || !b) return;
+  // On renumérote toute la liste pour éviter les égalités
+  const nouvelOrdre = etapes.slice();
+  nouvelOrdre[i] = b;
+  nouvelOrdre[i + sens] = a;
+  const lot = writeBatch(db);
+  nouvelOrdre.forEach((e, idx) => {
+    if (Number(e.ordre) !== idx + 1) lot.update(doc(db, "procedures", e.id), { ordre: idx + 1 });
+  });
+  try { await ecrire(lot.commit()); } catch { /* déjà signalé */ }
+}
+
+function formulaireEtape(type, e) {
+  const t = TYPES_PROCEDURE[type];
+  ouvrirFormulaire({
+    titre: e ? "Modifier" : (type === "repere" ? "Nouveau repère" : "Nouvelle étape — " + t.libelle),
+    valeurs: e || { type },
+    champs: [
+      { nom: "type", label: "Rubrique", type: "select", options: Object.entries(TYPES_PROCEDURE).map(([k, v]) => ({ valeur: k, libelle: v.icone + " " + v.libelle })) },
+      { nom: "titre", label: type === "repere" ? "Quoi ?" : "Titre de l'étape", requis: true, placeholder: type === "repere" ? "ex : Robinet d'arrêt général" : "ex : Ouvrir l'eau" },
+      { nom: "description", label: "Explications", type: "textarea", lignes: 4, placeholder: "ex : Tourner la vanne bleue dans le sens inverse des aiguilles d'une montre, puis…" },
+      { nom: "photos", label: "Photos avec commentaires", type: "photos" }
+    ],
+    onValider: async (v) => {
+      const attentes = [];
+      const photos = v.photos.elements.map((p) => {
+        if (p.photoId) return { photoId: p.photoId, commentaire: p.commentaire };
+        const n = enregistrerNouvellePhoto(p.dataUrl);
+        attentes.push(n.promesse);
+        return { photoId: n.id, commentaire: p.commentaire };
+      });
+      v.photos.supprimes.forEach(supprimerPhoto);
+
+      const changeDeType = e && e.type !== v.type;
+      const ordre = !e || changeDeType
+        ? etapesDuType(v.type).reduce((m, x) => Math.max(m, Number(x.ordre) || 0), 0) + 1
+        : e.ordre;
+      const ref = e ? doc(db, "procedures", e.id) : doc(collection(db, "procedures"));
+      attentes.push(ecrire(setDoc(ref, {
+        type: v.type, titre: v.titre, description: v.description, photos, ordre,
+        modifiePar: emailCourant(), modifieLe: serverTimestamp()
+      }, { merge: true })));
+      await Promise.all(attentes);
+      etat.ongletMaison = v.type;
+    },
+    onSupprimer: e ? async () => {
+      (e.photos || []).forEach((p) => supprimerPhoto(p.photoId));
+      await ecrire(deleteDoc(doc(db, "procedures", e.id)));
+    } : null,
+    texteSupprimer: "Supprimer cette étape et ses photos ?"
+  });
+}
+
+// =====================================================================
+//  Navigation & affichage
+// =====================================================================
+const VUES = {
+  depenses: { titre: "Dépenses", rendu: vueDepenses, ajouter: () => formulaireDepense(null) },
+  contacts: { titre: "Contacts", rendu: vueContacts, ajouter: () => formulaireContact(null) },
+  coffre: { titre: "Coffre-fort", rendu: vueCoffre, ajouter: () => formulaireCoffre(etat.ongletCoffre, null) },
+  maison: { titre: "La maison", rendu: vueMaison, ajouter: () => formulaireEtape(etat.ongletMaison, null) }
+};
+
+function afficher() {
+  if ($("#app").hidden) return;
+  const vue = VUES[etat.route] || VUES.depenses;
+  $("#titre-page").textContent = vue.titre;
+  document.querySelectorAll(".onglets button").forEach((b) => b.classList.toggle("actif", b.dataset.route === etat.route));
+  $("#contenu").replaceChildren(...[vue.rendu()].flat().filter(Boolean));
+}
+
+function lireRoute() {
+  const r = location.hash.replace("#", "");
+  etat.route = VUES[r] ? r : "depenses";
+  if (etat.route !== "contacts") etat.recherche = "";
+  afficher();
+  window.scrollTo(0, 0);
+}
+
+function montrerEcran(nom) {
+  for (const id of ["ecran-chargement", "ecran-config", "ecran-connexion", "app"]) {
+    $("#" + id).hidden = id !== nom;
+  }
+}
+
+// ---------------------------------------------------------------------
+//  Synchronisation temps réel avec Firestore
+// ---------------------------------------------------------------------
+function abonner() {
+  desabonner();
+  for (const nom of ["depenses", "contacts", "coffre", "procedures"]) {
+    const arret = onSnapshot(collection(db, nom), (snap) => {
+      etat[nom] = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      etat.charge[nom] = true;
+      afficher();
+    }, async (err) => {
+      console.error(err);
+      if (err.code === "permission-denied") {
+        desabonner();
+        await signOut(auth);
+        afficherErreurConnexion("Ce compte n'est pas autorisé à accéder aux données de la famille. Vérifiez les règles de sécurité Firestore (voir le guide).");
+      } else {
+        toast("Synchronisation : " + messageErreur(err), true);
+      }
+    });
+    etat.desabonnements.push(arret);
+  }
+}
+function desabonner() {
+  etat.desabonnements.forEach((f) => f());
+  etat.desabonnements = [];
+  for (const k of Object.keys(etat.charge)) etat.charge[k] = false;
+}
+
+// ---------------------------------------------------------------------
+//  Connexion
+// ---------------------------------------------------------------------
+function afficherErreurConnexion(message) {
+  const p = $("#erreur-connexion");
+  p.textContent = message;
+  p.hidden = !message;
+}
+
+function initialiserConnexion() {
+  $("#form-connexion").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const f = e.target;
+    const btn = f.querySelector("button[type=submit]");
+    afficherErreurConnexion("");
+    btn.disabled = true;
+    btn.textContent = "Connexion…";
+    try {
+      await signInWithEmailAndPassword(auth, f.email.value.trim(), f.motdepasse.value);
+      f.motdepasse.value = "";
+    } catch (err) {
+      afficherErreurConnexion(messageErreur(err));
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Se connecter";
+    }
+  });
+
+  $("#btn-oubli").addEventListener("click", async () => {
+    const email = $("#form-connexion").email.value.trim();
+    if (!email) { afficherErreurConnexion("Saisissez d'abord votre adresse email ci-dessus."); return; }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      afficherErreurConnexion("");
+      toast("Si ce compte existe, un email de réinitialisation a été envoyé à " + email);
+    } catch (err) {
+      afficherErreurConnexion(messageErreur(err));
+    }
+  });
+}
+
+function ouvrirCompte() {
+  const dlg = $("#modale");
+  dlg.replaceChildren(h("div", { class: "formulaire" },
+    h("div", { class: "formulaire-entete" },
+      h("h2", {}, "Mon compte"),
+      h("button", { type: "button", class: "btn-icone", "aria-label": "Fermer", onclick: () => dlg.close() }, "✕")
+    ),
+    h("div", { class: "formulaire-corps" },
+      h("p", {}, "Connecté en tant que :"),
+      h("p", {}, h("strong", {}, emailCourant())),
+      h("p", { class: "discret" }, "Les données sont partagées en temps réel avec toute la famille et restent consultables hors connexion sur ce téléphone.")
+    ),
+    h("div", { class: "formulaire-pied" },
+      h("button", {
+        type: "button", class: "btn secondaire",
+        onclick: async () => {
+          try { await sendPasswordResetEmail(auth, emailCourant()); toast("Email de changement de mot de passe envoyé"); }
+          catch (err) { toast(messageErreur(err), true); }
+        }
+      }, "Changer mon mot de passe"),
+      h("span", { class: "espace" }),
+      h("button", {
+        type: "button", class: "btn danger",
+        onclick: async () => { dlg.close(); await signOut(auth); }
+      }, "Se déconnecter")
+    )
+  ));
+  dlg.showModal();
+}
+
+// ---------------------------------------------------------------------
+//  Installation sur l'écran d'accueil
+// ---------------------------------------------------------------------
+let invitationInstallation = null;
+function bandeauInstallation() {
+  const b = $("#bandeau-installation");
+  const dejaInstallee = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+  if (dejaInstallee || stockageLire("installation-masquee") === "1") { b.hidden = true; return; }
+  const estIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const fermer = h("button", {
+    type: "button", class: "btn-icone petit", "aria-label": "Masquer",
+    onclick: () => { stockageEcrire("installation-masquee", "1"); b.hidden = true; }
+  }, "✕");
+  if (invitationInstallation) {
+    b.replaceChildren(
+      h("span", {}, "📲 Installez l'application sur votre téléphone"),
+      h("button", {
+        type: "button", class: "btn primaire petit",
+        onclick: async () => { invitationInstallation.prompt(); await invitationInstallation.userChoice; invitationInstallation = null; b.hidden = true; }
+      }, "Installer"),
+      fermer
+    );
+    b.hidden = false;
+  } else if (estIOS) {
+    b.replaceChildren(h("span", {}, "📲 Pour installer : touchez « Partager » ⬆️ puis « Sur l'écran d'accueil »."), fermer);
+    b.hidden = false;
+  }
+}
+
+// ---------------------------------------------------------------------
+//  Démarrage
+// ---------------------------------------------------------------------
+function demarrer() {
+  // Visionneuse
+  $("#visionneuse").addEventListener("click", fermerVisionneuse);
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") fermerVisionneuse(); });
+
+  // Fermer la modale en touchant le fond
+  $("#modale").addEventListener("click", (e) => { if (e.target === e.currentTarget) e.currentTarget.close(); });
+
+  // Navigation
+  document.querySelectorAll(".onglets button").forEach((b) => {
+    b.addEventListener("click", () => { location.hash = b.dataset.route; });
+  });
+  window.addEventListener("hashchange", lireRoute);
+  $("#fab").addEventListener("click", () => (VUES[etat.route] || VUES.depenses).ajouter());
+  $("#btn-compte").addEventListener("click", ouvrirCompte);
+
+  // Masquer les secrets dès que l'application passe en arrière-plan
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden && etat.reveles.size) { etat.reveles.clear(); afficher(); }
+  });
+
+  // Indicateur hors connexion
+  const majReseau = () => { $("#hors-ligne").hidden = navigator.onLine; };
+  window.addEventListener("online", majReseau);
+  window.addEventListener("offline", majReseau);
+  majReseau();
+
+  // Installation PWA (Android / Chrome)
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    invitationInstallation = e;
+    bandeauInstallation();
+  });
+
+  if (!configOK) { montrerEcran("ecran-config"); return; }
+
+  initialiserConnexion();
+  onAuthStateChanged(auth, (utilisateur) => {
+    if (utilisateur) {
+      montrerEcran("app");
+      bandeauInstallation();
+      abonner();
+      lireRoute();
+    } else {
+      desabonner();
+      etat.depenses = []; etat.contacts = []; etat.coffre = []; etat.procedures = [];
+      etat.reveles.clear();
+      cachePhotos.clear();
+      montrerEcran("ecran-connexion");
+    }
+  });
+}
+
+
+demarrer();
+
+</script>

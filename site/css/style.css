@@ -13,12 +13,15 @@
   --danger: #b3261e;
   --succes: #2e7d32;
   --ombre: 0 1px 3px rgba(0, 0, 0, .08), 0 1px 2px rgba(0, 0, 0, .04);
+  --entete-fond: #2f5d50;
+  --sur-primaire: #ffffff;
   --rayon: 14px;
   --nav-h: 64px;
   color-scheme: light;
 }
+/* Thème sombre : selon le réglage du téléphone, ou forcé par data-theme */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --primaire: #7fb8a6;
     --primaire-clair: #22332e;
     --accent: #e08a6f;
@@ -30,8 +33,26 @@
     --danger: #f2827a;
     --succes: #81c784;
     --ombre: none;
+    --entete-fond: #1a2a25;
+    --sur-primaire: #0e1a16;
     color-scheme: dark;
   }
+}
+:root[data-theme="dark"] {
+  --primaire: #7fb8a6;
+  --primaire-clair: #22332e;
+  --accent: #e08a6f;
+  --fond: #121615;
+  --carte: #1c2220;
+  --texte: #e8ece9;
+  --discret: #9aa49f;
+  --bordure: #2c3532;
+  --danger: #f2827a;
+  --succes: #81c784;
+  --ombre: none;
+  --entete-fond: #1a2a25;
+  --sur-primaire: #0e1a16;
+  color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
@@ -67,9 +88,8 @@ code { background: var(--primaire-clair); padding: 1px 5px; border-radius: 4px; 
   position: sticky; top: 0; z-index: 10;
   display: flex; align-items: center; gap: 10px;
   padding: calc(env(safe-area-inset-top) + 10px) 16px 10px;
-  background: var(--primaire); color: #fff;
+  background: var(--entete-fond); color: #fff;
 }
-@media (prefers-color-scheme: dark) { .entete { background: #1a2a25; } }
 .entete h1 { font-size: 20px; flex: 1; }
 .entete .btn-icone { color: #fff; background: rgba(255, 255, 255, .15); }
 .pastille { font-size: 12px; background: var(--accent); color: #fff; padding: 3px 8px; border-radius: 99px; }
@@ -113,8 +133,7 @@ button { font: inherit; color: inherit; }
   background: var(--primaire-clair); color: var(--primaire);
 }
 .btn:disabled { opacity: .55; cursor: default; }
-.btn.primaire { background: var(--primaire); color: #fff; }
-@media (prefers-color-scheme: dark) { .btn.primaire { color: #0e1a16; } }
+.btn.primaire { background: var(--primaire); color: var(--sur-primaire); }
 .btn.secondaire { background: transparent; border-color: var(--bordure); color: var(--texte); }
 .btn.danger { background: transparent; border-color: var(--danger); color: var(--danger); }
 .btn.lien { background: none; border: none; min-height: 0; padding: 6px 4px; color: var(--primaire); font-weight: 500; }
@@ -207,8 +226,7 @@ dialog#modale::backdrop { background: rgba(0, 0, 0, .45); }
   display: block; text-align: center; padding: 11px; border-radius: 10px; cursor: pointer;
   border: 1px solid var(--bordure); background: var(--fond); font-weight: 600;
 }
-.segments input:checked + span { background: var(--primaire); color: #fff; border-color: var(--primaire); }
-@media (prefers-color-scheme: dark) { .segments input:checked + span { color: #0e1a16; } }
+.segments input:checked + span { background: var(--primaire); color: var(--sur-primaire); border-color: var(--primaire); }
 
 .champ-photo .rangee { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 img.apercu { max-width: 100%; max-height: 240px; border-radius: 10px; display: block; margin-bottom: 8px; cursor: zoom-in; }
@@ -333,3 +351,12 @@ img.photo-etape { width: 100%; max-height: 360px; object-fit: cover; border-radi
 }
 #toast.visible { opacity: 1; transform: translate(-50%, 0); }
 #toast.erreur { background: var(--danger); }
+
+/* ---------- Fenêtre de confirmation ---------- */
+dialog.confirmation {
+  width: calc(100% - 32px); max-width: 380px; padding: 20px; border: none; border-radius: 16px;
+  background: var(--carte); color: var(--texte);
+}
+dialog.confirmation::backdrop { background: rgba(0, 0, 0, .45); }
+dialog.confirmation p { margin: 0 0 18px; font-size: 16px; }
+.rangee-droite { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }

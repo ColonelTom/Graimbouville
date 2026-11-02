@@ -143,6 +143,24 @@ async function copier(texte, quoi = "Copié") {
   }
 }
 
+/** Fenêtre de confirmation intégrée (remplace confirm() du navigateur). */
+function confirmer(message, libelleOk = "Supprimer") {
+  return new Promise((repondre) => {
+    const dlg = h("dialog", { class: "confirmation" });
+    const fin = (v) => { dlg.close(); dlg.remove(); repondre(v); };
+    dlg.append(
+      h("p", {}, message),
+      h("div", { class: "rangee-droite" },
+        h("button", { type: "button", class: "btn secondaire", onclick: () => fin(false) }, "Annuler"),
+        h("button", { type: "button", class: "btn danger", onclick: () => fin(true) }, libelleOk)
+      )
+    );
+    dlg.addEventListener("cancel", (e) => { e.preventDefault(); fin(false); });
+    document.body.append(dlg);
+    dlg.showModal();
+  });
+}
+
 function messageErreur(err) {
   const code = err && err.code ? String(err.code) : "";
   const messages = {
@@ -408,7 +426,7 @@ function ouvrirFormulaire({ titre, champs, valeurs = {}, onValider, onSupprimer,
     pied.append(h("button", {
       type: "button", class: "btn danger",
       onclick: async () => {
-        if (!confirm(texteSupprimer || "Supprimer définitivement cet élément ?")) return;
+        if (!(await confirmer(texteSupprimer || "Supprimer définitivement cet élément ?"))) return;
         try {
           await onSupprimer();
           dlg.close();
@@ -771,6 +789,10 @@ function formulaireDepense(dep) {
 }
 
 function exporterCSV(liste) {
+  if (window.GRAIMBOUVILLE_DEMO) {
+    toast("Dans la vraie application, ce bouton télécharge un fichier Excel.");
+    return;
+  }
   const cellule = (v) => '"' + String(v === undefined || v === null ? "" : v).replace(/"/g, '""') + '"';
   const lignes = [["Date", "Intitulé", "Catégorie", "Montant (€)", "Payé par", "Notes", "Justificatif"].map(cellule).join(";")];
   liste.forEach((d) => {
