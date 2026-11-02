@@ -2,7 +2,7 @@
 //  Service worker : permet d'ouvrir l'application même sans réseau.
 //  Pensez à augmenter VERSION à chaque mise à jour des fichiers.
 // =====================================================================
-const VERSION = "graimbouville-v1";
+const VERSION = "graimbouville-v2";
 const FICHIERS = [
   "./",
   "./index.html",

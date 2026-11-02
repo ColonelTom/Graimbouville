@@ -20,16 +20,16 @@ import { firebaseConfig, PAYEURS } from "./firebase-config.js";
 // ---------------------------------------------------------------------
 const CATEGORIES = ["Assurance", "Réparations", "Électricité", "Eau", "Achats divers / courses"];
 const ICONES_CATEGORIE = {
-  "Assurance": "🛡️", "Réparations": "🔧", "Électricité": "💡", "Eau": "💧", "Achats divers / courses": "🛒"
+  "Assurance": "bouclier", "Réparations": "outil", "Électricité": "eclair", "Eau": "goutte", "Achats divers / courses": "panier"
 };
 const SPECIALITES = [
   "Plombier", "Couvreur", "Électricien", "Maçon", "Chauffagiste", "Menuisier",
   "Serrurier", "Peintre", "Jardinier / paysagiste", "Ramoneur", "Vidange fosse septique", "Homme toutes mains"
 ];
 const TYPES_CONTACT = {
-  artisan: { libelle: "Artisans", icone: "🛠️", champSpecialite: "Spécialité", exemple: "ex : Plombier" },
-  voisin: { libelle: "Voisins", icone: "🏡", champSpecialite: "Lien / rôle", exemple: "ex : Voisin de droite, gardien" },
-  urgence: { libelle: "Secours", icone: "🚨", champSpecialite: "Service", exemple: "ex : Médecin, mairie, hôpital" }
+  artisan: { libelle: "Artisans", icone: "outil", champSpecialite: "Spécialité", exemple: "ex : Plombier" },
+  voisin: { libelle: "Voisins", icone: "maison", champSpecialite: "Lien / rôle", exemple: "ex : Voisin de droite, gardien" },
+  urgence: { libelle: "Secours", icone: "secours", champSpecialite: "Service", exemple: "ex : Médecin, mairie, hôpital" }
 };
 const URGENCES_NATIONALES = [
   { nom: "SAMU", tel: "15" },
@@ -40,16 +40,56 @@ const URGENCES_NATIONALES = [
   { nom: "Dépannage électricité Enedis (76)", tel: "0972675076" }
 ];
 const TYPES_COFFRE = {
-  acces: { libelle: "Identifiants", icone: "🔑" },
-  contrat: { libelle: "Contrats", icone: "📄" },
-  banque: { libelle: "Banque", icone: "🏦" }
+  acces: { libelle: "Identifiants", },
+  contrat: { libelle: "Contrats", },
+  banque: { libelle: "Banque", }
 };
 const TYPES_CONTRAT = ["Assurance", "Électricité", "Eau", "Internet / Box", "Gaz / Fioul", "Autre"];
 const TYPES_PROCEDURE = {
-  arrivee: { libelle: "Arrivée", icone: "🔓", vide: "Ajoutez les étapes pour ouvrir la maison (eau, électricité, chauffage…)." },
-  depart: { libelle: "Départ", icone: "🔒", vide: "Ajoutez les étapes pour fermer la maison (couper l'eau, volets, vannes…)." },
-  repere: { libelle: "Repères", icone: "📍", vide: "Notez où se trouvent les choses importantes (robinet d'arrêt, tableau électrique, purge du chauffe-eau…)." }
+  arrivee: { libelle: "Arrivée", vide: "Ajoutez les étapes pour ouvrir la maison (eau, électricité, chauffage…)." },
+  depart: { libelle: "Départ", vide: "Ajoutez les étapes pour fermer la maison (couper l'eau, volets, vannes…)." },
+  repere: { libelle: "Repères", vide: "Notez où se trouvent les choses importantes (robinet d'arrêt, tableau électrique, purge du chauffe-eau…)." }
 };
+
+// ---------------------------------------------------------------------
+//  Icônes au trait (dessins fixes, sans texte venant de l'utilisateur)
+// ---------------------------------------------------------------------
+const ICONES = {
+  euro: '<path d="M17 6.5A6.5 6.5 0 1 0 17 17.5M4 10h9M4 14h9"/>',
+  tel: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z"/>',
+  cadenas: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+  maison: '<path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-5h4v5"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  perso: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+  panier: '<path d="M3 4h2l2 11h11l2-8H6"/><circle cx="9" cy="19" r="1.4"/><circle cx="17" cy="19" r="1.4"/>',
+  outil: '<path d="M14.7 6.3a4 4 0 0 0 5 5L11 20a2.1 2.1 0 0 1-3-3l8.7-8.7a4 4 0 0 0-2-2z"/>',
+  eclair: '<path d="M13 3L5 14h6l-1 7 8-11h-6z"/>',
+  goutte: '<path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z"/>',
+  bouclier: '<path d="M12 3l7 3v6c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6z"/>',
+  secours: '<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
+  crayon: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M14 6l4 4"/>',
+  oeil: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  oeilBarre: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/>',
+  copier: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>',
+  photo: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+  trombone: '<path d="M20 11l-8 8a5 5 0 0 1-7-7l8-8a3.5 3.5 0 0 1 5 5l-8 8a2 2 0 0 1-3-3l7-7"/>',
+  epingle: '<path d="M12 21s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/>',
+  haut: '<path d="M12 19V5M6 11l6-6 6 6"/>',
+  bas: '<path d="M12 5v14M6 13l6 6 6-6"/>',
+  ok: '<path d="M5 12l5 5 9-10"/>',
+  croix: '<path d="M6 6l12 12M18 6L6 18"/>',
+  mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+  telecharger: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
+  bulle: '<path d="M4 5h16v11H9l-5 4z"/>'
+};
+/** Renvoie une icône prête à insérer (span contenant un dessin SVG). */
+function ic(nom) {
+  const s = document.createElement("span");
+  s.className = "ico";
+  s.setAttribute("aria-hidden", "true");
+  s.innerHTML = `<svg viewBox="0 0 24 24">${ICONES[nom] || ""}</svg>`;
+  return s;
+}
 
 // ---------------------------------------------------------------------
 //  Petits utilitaires
@@ -132,13 +172,13 @@ function toast(message, erreur = false) {
 async function copier(texte, quoi = "Copié") {
   try {
     await navigator.clipboard.writeText(texte);
-    toast(quoi + " dans le presse-papiers ✓");
+    toast(quoi + " dans le presse-papiers");
   } catch {
     // Solution de secours pour les anciens navigateurs
     const zone = h("textarea", { value: texte, readonly: true, style: "position:fixed;opacity:0" });
     document.body.append(zone);
     zone.select();
-    try { document.execCommand("copy"); toast(quoi + " ✓"); } catch { toast("Copie impossible", true); }
+    try { document.execCommand("copy"); toast(quoi); } catch { toast("Copie impossible", true); }
     zone.remove();
   }
 }
@@ -334,7 +374,7 @@ function ouvrirFormulaire({ titre, champs, valeurs = {}, onValider, onSupprimer,
   const form = h("form", { class: "formulaire", novalidate: true });
   form.append(h("div", { class: "formulaire-entete" },
     h("h2", {}, titre),
-    h("button", { type: "button", class: "btn-icone", "aria-label": "Fermer", onclick: () => dlg.close() }, "✕")
+    h("button", { type: "button", class: "btn-icone", "aria-label": "Fermer", onclick: () => dlg.close() }, ic("croix"))
   ));
   const corps = h("div", { class: "formulaire-corps" });
   form.append(corps);
@@ -391,7 +431,7 @@ function ouvrirFormulaire({ titre, champs, valeurs = {}, onValider, onSupprimer,
       const oeil = h("button", {
         type: "button", class: "btn-icone petit", "aria-label": "Afficher",
         onclick: () => { input.type = input.type === "password" ? "text" : "password"; }
-      }, "👁");
+      }, ic("oeil"));
       controle = input;
       lecteurs[c.nom] = () => input.value.trim();
       corps.append(h("label", { class: "champ" }, h("span", { class: "label" }, c.label + (c.requis ? " *" : "")),
@@ -458,7 +498,7 @@ function ouvrirFormulaire({ titre, champs, valeurs = {}, onValider, onSupprimer,
     try {
       await onValider(valeursLues);
       dlg.close();
-      toast("Enregistré ✓");
+      toast("Enregistré");
     } catch (err) {
       erreur.textContent = err._signale ? "L'enregistrement a échoué." : messageErreur(err);
       erreur.hidden = false;
@@ -483,7 +523,7 @@ function champPhoto(idInitial) {
   const btnRetirer = h("button", { type: "button", class: "btn lien danger" }, "Retirer la photo");
 
   function majBoutons() {
-    btnAjout.textContent = aUnePhoto ? "📷 Remplacer la photo" : "📷 Ajouter une photo";
+    btnAjout.replaceChildren(ic("photo"), aUnePhoto ? "Remplacer la photo" : "Ajouter une photo");
     btnRetirer.hidden = !aUnePhoto;
   }
   function montrer(src) {
@@ -535,7 +575,7 @@ function champPhotosCommentees(initiales) {
   const supprimes = [];
   const liste = h("div", { class: "liste-photos-form" });
   const input = h("input", { type: "file", accept: "image/*", multiple: true, hidden: true });
-  const btnAjout = h("button", { type: "button", class: "btn secondaire" }, "📷 Ajouter des photos");
+  const btnAjout = h("button", { type: "button", class: "btn secondaire" }, ic("photo"), "Ajouter des photos");
 
   function dessiner() {
     liste.replaceChildren();
@@ -579,7 +619,7 @@ function champPhotosCommentees(initiales) {
     }
     input.value = "";
     btnAjout.disabled = false;
-    btnAjout.textContent = "📷 Ajouter des photos";
+    btnAjout.replaceChildren(ic("photo"), "Ajouter des photos");
     dessiner();
   });
 
@@ -601,7 +641,7 @@ function vide(texte) {
 function sousOnglets(types, actif, onChange) {
   return h("div", { class: "sous-onglets" },
     Object.entries(types).map(([cle, t]) =>
-      h("button", { type: "button", class: cle === actif ? "actif" : "", onclick: () => onChange(cle) }, t.icone + " " + t.libelle)
+      h("button", { type: "button", class: cle === actif ? "actif" : "", onclick: () => onChange(cle) }, t.libelle)
     )
   );
 }
@@ -633,13 +673,13 @@ function ligneInfo(libelle, valeur, opts = {}) {
     actions.append(h("button", {
       type: "button", class: "btn-icone petit", "aria-label": revele ? "Masquer" : "Afficher",
       onclick: () => basculerSecret(cleSecret)
-    }, revele ? "🙈" : "👁"));
+    }, ic(revele ? "oeilBarre" : "oeil")));
   }
   if (copiable) {
     actions.append(h("button", {
       type: "button", class: "btn-icone petit", "aria-label": "Copier",
       onclick: () => copier(valeur, libelle + " copié")
-    }, "📋"));
+    }, ic("copier")));
   }
   return h("div", { class: "ligne-info" },
     h("span", { class: "ligne-libelle" }, libelle),
@@ -723,9 +763,9 @@ function vueDepenses() {
       ),
       h("div", { class: "carte liste" },
         deps.map((d) => h("button", { type: "button", class: "ligne-depense", onclick: () => formulaireDepense(d) },
-          h("span", { class: "icone-cat", title: d.categorie }, ICONES_CATEGORIE[d.categorie] || "💶"),
+          h("span", { class: "icone-cat", title: d.categorie }, ic(ICONES_CATEGORIE[d.categorie] || "euro")),
           h("span", { class: "depense-texte" },
-            h("strong", {}, d.libelle || "(sans intitulé)", d.photoId ? h("span", { class: "trombone", title: "Justificatif joint" }, " 📎") : null),
+            h("strong", {}, d.libelle || "(sans intitulé)", d.photoId ? h("span", { class: "trombone", title: "Justificatif joint" }, ic("trombone")) : null),
             h("small", {}, dateLisible(d.date) + " · " + (d.categorie || "") + " · " + (d.payeur || ""))
           ),
           h("span", { class: "montant" }, euros(d.montant))
@@ -739,7 +779,7 @@ function vueDepenses() {
     resume,
     ...blocs,
     h("div", { class: "pied-liste" },
-      h("button", { type: "button", class: "btn secondaire", onclick: () => exporterCSV(liste) }, "⬇️ Exporter ces dépenses (tableur)")
+      h("button", { type: "button", class: "btn secondaire", onclick: () => exporterCSV(liste) }, ic("telecharger"), "Exporter ces dépenses (tableur)")
     )
   ];
 }
@@ -817,7 +857,7 @@ function vueContacts() {
   const recherche = etat.recherche.toLowerCase();
 
   const champRecherche = h("input", {
-    type: "search", class: "recherche", placeholder: "🔍 Rechercher un nom, un métier…", value: etat.recherche,
+    type: "search", class: "recherche", placeholder: "Rechercher un nom, un métier…", value: etat.recherche,
     oninput: (e) => {
       etat.recherche = e.target.value;
       const pos = e.target.selectionStart;
@@ -864,19 +904,19 @@ function carteContact(c) {
   const t = TYPES_CONTACT[c.type] || TYPES_CONTACT.artisan;
   return h("div", { class: "carte contact" },
     h("button", { type: "button", class: "contact-entete", onclick: () => formulaireContact(c) },
-      h("span", { class: "avatar" }, t.icone),
+      h("span", { class: "avatar" }, ic(t.icone)),
       h("span", { class: "contact-texte" },
         h("strong", {}, c.nom),
         c.specialite ? h("small", {}, c.specialite) : null
       ),
-      h("span", { class: "chevron" }, "✏️")
+      h("span", { class: "chevron" }, ic("crayon"))
     ),
-    c.adresse ? h("p", { class: "contact-detail" }, "📍 " + c.adresse) : null,
+    c.adresse ? h("p", { class: "contact-detail" }, ic("epingle"), " " + c.adresse) : null,
     c.notes ? h("p", { class: "contact-detail notes" }, c.notes) : null,
     h("div", { class: "contact-actions" },
-      c.telephone ? h("a", { class: "btn primaire", href: telLien(c.telephone) }, "📞 " + telLisible(c.telephone)) : null,
-      c.telephone2 ? h("a", { class: "btn secondaire", href: telLien(c.telephone2) }, "📞 " + telLisible(c.telephone2)) : null,
-      c.email ? h("a", { class: "btn secondaire", href: "mailto:" + c.email }, "✉️ Email") : null
+      c.telephone ? h("a", { class: "btn primaire", href: telLien(c.telephone) }, ic("tel"), telLisible(c.telephone)) : null,
+      c.telephone2 ? h("a", { class: "btn secondaire", href: telLien(c.telephone2) }, ic("tel"), telLisible(c.telephone2)) : null,
+      c.email ? h("a", { class: "btn secondaire", href: "mailto:" + c.email }, ic("mail"), "Email") : null
     )
   );
 }
@@ -888,7 +928,7 @@ function formulaireContact(c) {
     titre: c ? "Modifier le contact" : "Nouveau contact",
     valeurs: c || { type },
     champs: [
-      { nom: "type", label: "Rubrique", type: "select", options: Object.entries(TYPES_CONTACT).map(([k, v]) => ({ valeur: k, libelle: v.icone + " " + v.libelle })) },
+      { nom: "type", label: "Rubrique", type: "select", options: Object.entries(TYPES_CONTACT).map(([k, v]) => ({ valeur: k, libelle: v.libelle })) },
       { nom: "nom", label: "Nom", requis: true, placeholder: "ex : M. Dupont" },
       { nom: "specialite", label: t.champSpecialite, placeholder: t.exemple, suggestions: type === "artisan" ? SPECIALITES : null },
       { nom: "telephone", label: "Téléphone", type: "tel", placeholder: "06 12 34 56 78" },
@@ -947,14 +987,14 @@ function vueCoffre() {
     return h("div", { class: "carte coffre" },
       h("button", { type: "button", class: "coffre-entete", onclick: () => formulaireCoffre(type, e) },
         h("span", { class: "contact-texte" }, h("strong", {}, e.titre), sousTitre ? h("small", {}, sousTitre) : null),
-        h("span", { class: "chevron" }, "✏️")
+        h("span", { class: "chevron" }, ic("crayon"))
       ),
       lignes
     );
   });
 
   return [
-    h("div", { class: "bandeau info" }, "🔒 Données sensibles : ne partagez pas votre écran. Les mots de passe se masquent seuls après 30 s."),
+    h("div", { class: "bandeau info" }, ic("cadenas"), "Données sensibles : ne partagez pas votre écran. Les mots de passe se masquent seuls après 30 s."),
     sousOnglets(TYPES_COFFRE, type, (t) => { etat.ongletCoffre = t; afficher(); }),
     cartes.length ? h("div", { class: "pile" }, cartes) : vide({
       acces: "Aucun identifiant. Ajoutez vos espaces clients (électricité, eau, box internet…).",
@@ -1057,13 +1097,13 @@ function vueMaison() {
           ? h("button", {
             type: "button", class: "case" + (coche ? " cochee" : ""), "aria-label": coche ? "Décocher" : "Marquer comme fait",
             onclick: () => { coche ? etat.coches.delete(e.id) : etat.coches.add(e.id); afficher(); }
-          }, coche ? "✓" : String(i + 1))
-          : h("span", { class: "case repere" }, "📍"),
+          }, coche ? ic("ok") : String(i + 1))
+          : h("span", { class: "case repere" }, ic("epingle")),
         h("h3", {}, e.titre),
         h("div", { class: "etape-outils" },
-          h("button", { type: "button", class: "btn-icone petit", "aria-label": "Monter", disabled: i === 0, onclick: () => deplacerEtape(etapes, i, -1) }, "↑"),
-          h("button", { type: "button", class: "btn-icone petit", "aria-label": "Descendre", disabled: i === etapes.length - 1, onclick: () => deplacerEtape(etapes, i, 1) }, "↓"),
-          h("button", { type: "button", class: "btn-icone petit", "aria-label": "Modifier", onclick: () => formulaireEtape(type, e) }, "✏️")
+          h("button", { type: "button", class: "btn-icone petit", "aria-label": "Monter", disabled: i === 0, onclick: () => deplacerEtape(etapes, i, -1) }, ic("haut")),
+          h("button", { type: "button", class: "btn-icone petit", "aria-label": "Descendre", disabled: i === etapes.length - 1, onclick: () => deplacerEtape(etapes, i, 1) }, ic("bas")),
+          h("button", { type: "button", class: "btn-icone petit", "aria-label": "Modifier", onclick: () => formulaireEtape(type, e) }, ic("crayon"))
         )
       ),
       e.description ? h("p", { class: "etape-description" }, e.description) : null,
@@ -1099,7 +1139,7 @@ function formulaireEtape(type, e) {
     titre: e ? "Modifier" : (type === "repere" ? "Nouveau repère" : "Nouvelle étape — " + t.libelle),
     valeurs: e || { type },
     champs: [
-      { nom: "type", label: "Rubrique", type: "select", options: Object.entries(TYPES_PROCEDURE).map(([k, v]) => ({ valeur: k, libelle: v.icone + " " + v.libelle })) },
+      { nom: "type", label: "Rubrique", type: "select", options: Object.entries(TYPES_PROCEDURE).map(([k, v]) => ({ valeur: k, libelle: v.libelle })) },
       { nom: "titre", label: type === "repere" ? "Quoi ?" : "Titre de l'étape", requis: true, placeholder: type === "repere" ? "ex : Robinet d'arrêt général" : "ex : Ouvrir l'eau" },
       { nom: "description", label: "Explications", type: "textarea", lignes: 4, placeholder: "ex : Tourner la vanne bleue dans le sens inverse des aiguilles d'une montre, puis…" },
       { nom: "photos", label: "Photos avec commentaires", type: "photos" }
@@ -1241,7 +1281,7 @@ function ouvrirCompte() {
   dlg.replaceChildren(h("div", { class: "formulaire" },
     h("div", { class: "formulaire-entete" },
       h("h2", {}, "Mon compte"),
-      h("button", { type: "button", class: "btn-icone", "aria-label": "Fermer", onclick: () => dlg.close() }, "✕")
+      h("button", { type: "button", class: "btn-icone", "aria-label": "Fermer", onclick: () => dlg.close() }, ic("croix"))
     ),
     h("div", { class: "formulaire-corps" },
       h("p", {}, "Connecté en tant que :"),
@@ -1279,10 +1319,10 @@ function bandeauInstallation() {
   const fermer = h("button", {
     type: "button", class: "btn-icone petit", "aria-label": "Masquer",
     onclick: () => { stockageEcrire("installation-masquee", "1"); b.hidden = true; }
-  }, "✕");
+  }, ic("croix"));
   if (invitationInstallation) {
     b.replaceChildren(
-      h("span", {}, "📲 Installez l'application sur votre téléphone"),
+      h("span", {}, "Installez l'application sur votre téléphone"),
       h("button", {
         type: "button", class: "btn primaire petit",
         onclick: async () => { invitationInstallation.prompt(); await invitationInstallation.userChoice; invitationInstallation = null; b.hidden = true; }
@@ -1291,7 +1331,7 @@ function bandeauInstallation() {
     );
     b.hidden = false;
   } else if (estIOS) {
-    b.replaceChildren(h("span", {}, "📲 Pour installer : touchez « Partager » ⬆️ puis « Sur l'écran d'accueil »."), fermer);
+    b.replaceChildren(h("span", {}, "Pour installer : touchez « Partager » puis « Sur l'écran d'accueil »."), fermer);
     b.hidden = false;
   }
 }

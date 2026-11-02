@@ -39,15 +39,14 @@ styles += """
 .bandeau-demo {
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
   padding: 8px max(16px, env(safe-area-inset-left, 0px)) 8px max(16px, env(safe-area-inset-right, 0px));
-  background: var(--accent); color: var(--sur-primaire); font-size: 13px;
+  background: var(--primaire-clair); color: var(--texte); font-size: 13px;
 }
-.bandeau-demo span { flex: 1 1 200px; min-width: 0; }
-.bandeau-demo .btn.primaire { background: var(--carte); color: var(--texte); }
-.aide-demo { margin: 0; font-size: 14px; color: var(--accent); font-weight: 600; }
+.bandeau-demo > span { flex: 1 1 200px; min-width: 0; }
+.aide-demo { margin: 0; font-size: 14px; color: var(--primaire); font-weight: 600; }
 """
 
 page = f"""<title>Graimbouville</title>
-<meta name="theme-color" content="#2f5d50">
+<meta name="theme-color" content="#f2f2f5">
 <style>
 {styles}
 </style>

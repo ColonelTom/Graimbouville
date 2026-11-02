@@ -193,7 +193,8 @@ function demoTicket() {
 })();
 
 // ---------- Interface propre à la démo ----------
-(function interfaceDemo() {
+// Lancée juste après le chargement de l'application (elle utilise ses fonctions).
+setTimeout(function interfaceDemo() {
   // Formulaire de connexion pré-rempli
   const form = document.querySelector("#form-connexion");
   form.email.value = "demo@graimbouville.fr";
@@ -205,7 +206,7 @@ function demoTicket() {
   // Bandeau « démo » sous l'en-tête
   const bandeau = h("div", { class: "bandeau-demo" },
     h("span", {}, "Démo avec de fausses données. Rien n'est enregistré : tout revient à zéro au rechargement."),
-    h("button", { type: "button", class: "btn primaire petit", onclick: () => ouvrirAvis() }, "💬 Donner mon avis")
+    h("button", { type: "button", class: "btn primaire petit", onclick: () => ouvrirAvis() }, ic("bulle"), "Donner mon avis")
   );
   document.querySelector(".entete").after(bandeau);
 
@@ -249,7 +250,7 @@ function demoTicket() {
           await commentaires.create({ anchor: ancre, text: t });
           brouillon = "";
           dlg.close();
-          toast("Avis enregistré ✓ Merci !");
+          toast("Avis enregistré. Merci !");
         } catch (e) {
           const code = e && e.code;
           message.textContent = code === "consent_required"
@@ -272,7 +273,7 @@ function demoTicket() {
     dlg.replaceChildren(h("div", { class: "formulaire" },
       h("div", { class: "formulaire-entete" },
         h("h2", {}, "Votre avis sur l'application"),
-        h("button", { type: "button", class: "btn-icone", "aria-label": "Fermer", onclick: () => dlg.close() }, "✕")
+        h("button", { type: "button", class: "btn-icone", "aria-label": "Fermer", onclick: () => dlg.close() }, ic("croix"))
       ),
       h("div", { class: "formulaire-corps" },
         h("label", { class: "champ", for: "avis-qui" }, h("span", { class: "label" }, "Votre prénom"), qui),
@@ -287,4 +288,4 @@ function demoTicket() {
     ));
     dlg.showModal();
   }
-})();
+}, 0);
