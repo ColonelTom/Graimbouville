@@ -22,6 +22,7 @@ def data_uri(chemin: Path) -> str:
 index = (SITE / "index.html").read_text(encoding="utf-8")
 corps = re.search(r"<body>(.*)</body>", index, re.S).group(1)
 corps = corps.replace("icons/icon-192.png", data_uri(SITE / "icons" / "icon-192.png"))
+corps = corps.replace("img/maison.jpg", "data:image/jpeg;base64," + base64.b64encode((SITE / "img" / "maison.jpg").read_bytes()).decode())
 
 # 2) Le script de l'application, sans les imports Firebase ni le service worker
 app = (SITE / "js" / "app.js").read_text(encoding="utf-8")

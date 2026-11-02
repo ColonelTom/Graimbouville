@@ -37,11 +37,16 @@
   </div>
 
   <!-- Écran : connexion -->
-  <div id="ecran-connexion" class="ecran-centre" hidden>
-    <img src="icons/icon-192.png" alt="" width="96" height="96" class="logo">
-    <h1>Graimbouville</h1>
-    <p class="sous-titre">La maison de famille</p>
+  <div id="ecran-connexion" class="connexion" hidden>
+    <div class="connexion-photo">
+      <img src="img/maison.jpg" alt="La maison de Graimbouville vue depuis la pelouse">
+    </div>
+    <div class="connexion-contenu">
     <form id="form-connexion" class="carte formulaire-connexion">
+      <div class="connexion-titre">
+        <h1>Graimbouville</h1>
+        <p class="sous-titre">La maison de famille</p>
+      </div>
       <label>Adresse email
         <input type="email" name="email" autocomplete="username" required>
       </label>
@@ -52,6 +57,7 @@
       <button type="submit" class="btn primaire large">Se connecter</button>
       <button type="button" id="btn-oubli" class="btn lien">Mot de passe oublié ?</button>
     </form>
+    </div>
   </div>
 
   <!-- Application -->

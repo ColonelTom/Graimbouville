@@ -2,7 +2,7 @@
 //  Service worker : permet d'ouvrir l'application même sans réseau.
 //  Pensez à augmenter VERSION à chaque mise à jour des fichiers.
 // =====================================================================
-const VERSION = "graimbouville-v2";
+const VERSION = "graimbouville-v3";
 const FICHIERS = [
   "./",
   "./index.html",
@@ -12,7 +12,8 @@ const FICHIERS = [
   "./manifest.webmanifest",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
-  "./icons/apple-touch-icon.png"
+  "./icons/apple-touch-icon.png",
+  "./img/maison.jpg"
 ];
 
 self.addEventListener("install", (e) => {
