@@ -22,7 +22,12 @@ async function signInWithEmailAndPassword(a, email) { // en démo, tout mot de p
   demoUtilisateur = { email: email || PROFILS[0].identifiant };
   demoAbonnesAuth.forEach((s) => s(demoUtilisateur));
 }
-async function signOut() { demoUtilisateur = null; demoAbonnesAuth.forEach((s) => s(null)); }
+async function signOut() {
+  demoUtilisateur = null;
+  demoAbonnesAuth.forEach((s) => s(null));
+  const f = document.querySelector("#form-connexion");
+  if (f) f.motdepasse.value = "demonstration"; // en démo, le mot de passe reste pré-rempli
+}
 async function sendPasswordResetEmail() { /* rien en démo */ }
 
 // ---------- Faux Firestore ----------

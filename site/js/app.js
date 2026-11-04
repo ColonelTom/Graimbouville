@@ -46,8 +46,8 @@ const TYPES_COFFRE = {
 };
 const TYPES_CONTRAT = ["Assurance", "Électricité", "Eau", "Internet / Box", "Gaz / Fioul", "Autre"];
 const TYPES_PROCEDURE = {
-  arrivee: { libelle: "Arrivée", vide: "Ajoutez les étapes pour ouvrir la maison (eau, électricité, chauffage…)." },
-  depart: { libelle: "Départ", vide: "Ajoutez les étapes pour fermer la maison (couper l'eau, volets, vannes…)." },
+  arrivee: { libelle: "Arrivée", vide: "Ajoutez les fiches utiles à l'arrivée : ouvrir l'eau, remettre l'électricité, le chauffage…" },
+  depart: { libelle: "Départ", vide: "Ajoutez les fiches utiles au départ : couper l'eau, fermer les volets, les vannes…" },
   repere: { libelle: "Repères", vide: "Notez où se trouvent les choses importantes (robinet d'arrêt, tableau électrique, purge du chauffe-eau…)." }
 };
 
@@ -273,7 +273,6 @@ const etat = {
   ongletMaison: "arrivee",
   recherche: "",
   reveles: new Set(),     // champs secrets actuellement affichés en clair
-  coches: new Set(),      // étapes cochées pendant une procédure (non enregistré)
   desabonnements: []
 };
 
@@ -1076,41 +1075,21 @@ function etapesDuType(type) {
 function vueMaison() {
   if (!etat.charge.procedures) return chargement();
   const type = etat.ongletMaison;
-  const etapes = etapesDuType(type);
-  const estProcedure = type !== "repere";
-  const nbCoches = etapes.filter((e) => etat.coches.has(e.id)).length;
+  const fiches = etapesDuType(type);
 
   const resultat = [sousOnglets(TYPES_PROCEDURE, type, (t) => { etat.ongletMaison = t; afficher(); })];
-  if (!etapes.length) {
+  if (!fiches.length) {
     resultat.push(vide(TYPES_PROCEDURE[type].vide));
     return resultat;
   }
 
-  if (estProcedure) {
-    resultat.push(h("div", { class: "progression" },
-      h("div", { class: "barre" }, h("div", { style: `width:${Math.round((nbCoches / etapes.length) * 100)}%` })),
-      h("span", {}, `${nbCoches} / ${etapes.length} étape${etapes.length > 1 ? "s" : ""}`),
-      nbCoches ? h("button", {
-        type: "button", class: "btn lien",
-        onclick: () => { etapes.forEach((e) => etat.coches.delete(e.id)); afficher(); }
-      }, "Tout décocher") : null
-    ));
-  }
-
-  resultat.push(h("div", { class: "pile" }, etapes.map((e, i) => {
-    const coche = etat.coches.has(e.id);
-    return h("article", { class: "carte etape" + (coche ? " faite" : "") },
+  resultat.push(h("div", { class: "pile" }, fiches.map((e, i) =>
+    h("article", { class: "carte etape" },
       h("div", { class: "etape-entete" },
-        estProcedure
-          ? h("button", {
-            type: "button", class: "case" + (coche ? " cochee" : ""), "aria-label": coche ? "Décocher" : "Marquer comme fait",
-            onclick: () => { coche ? etat.coches.delete(e.id) : etat.coches.add(e.id); afficher(); }
-          }, coche ? ic("ok") : String(i + 1))
-          : h("span", { class: "case repere" }, ic("epingle")),
         h("h3", {}, e.titre),
         h("div", { class: "etape-outils" },
-          h("button", { type: "button", class: "btn-icone petit", "aria-label": "Monter", disabled: i === 0, onclick: () => deplacerEtape(etapes, i, -1) }, ic("haut")),
-          h("button", { type: "button", class: "btn-icone petit", "aria-label": "Descendre", disabled: i === etapes.length - 1, onclick: () => deplacerEtape(etapes, i, 1) }, ic("bas")),
+          h("button", { type: "button", class: "btn-icone petit", "aria-label": "Monter", disabled: i === 0, onclick: () => deplacerEtape(fiches, i, -1) }, ic("haut")),
+          h("button", { type: "button", class: "btn-icone petit", "aria-label": "Descendre", disabled: i === fiches.length - 1, onclick: () => deplacerEtape(fiches, i, 1) }, ic("bas")),
           h("button", { type: "button", class: "btn-icone petit", "aria-label": "Modifier", onclick: () => formulaireEtape(type, e) }, ic("crayon"))
         )
       ),
@@ -1121,8 +1100,8 @@ function vueMaison() {
           p.commentaire ? h("figcaption", {}, p.commentaire) : null
         ))
       ) : null
-    );
-  })));
+    )
+  )));
   return resultat;
 }
 
@@ -1144,11 +1123,11 @@ async function deplacerEtape(etapes, i, sens) {
 function formulaireEtape(type, e) {
   const t = TYPES_PROCEDURE[type];
   ouvrirFormulaire({
-    titre: e ? "Modifier" : (type === "repere" ? "Nouveau repère" : "Nouvelle étape — " + t.libelle),
+    titre: e ? "Modifier la fiche" : "Nouvelle fiche — " + t.libelle,
     valeurs: e || { type },
     champs: [
       { nom: "type", label: "Rubrique", type: "select", options: Object.entries(TYPES_PROCEDURE).map(([k, v]) => ({ valeur: k, libelle: v.libelle })) },
-      { nom: "titre", label: type === "repere" ? "Quoi ?" : "Titre de l'étape", requis: true, placeholder: type === "repere" ? "ex : Robinet d'arrêt général" : "ex : Ouvrir l'eau" },
+      { nom: "titre", label: "Titre", requis: true, placeholder: type === "repere" ? "ex : Robinet d'arrêt général" : type === "depart" ? "ex : Couper l'eau" : "ex : Ouvrir l'eau" },
       { nom: "description", label: "Explications", type: "textarea", lignes: 4, placeholder: "ex : Tourner la vanne bleue dans le sens inverse des aiguilles d'une montre, puis…" },
       { nom: "photos", label: "Photos avec commentaires", type: "photos" }
     ],
@@ -1178,7 +1157,7 @@ function formulaireEtape(type, e) {
       (e.photos || []).forEach((p) => supprimerPhoto(p.photoId));
       await ecrire(deleteDoc(doc(db, "procedures", e.id)));
     } : null,
-    texteSupprimer: "Supprimer cette étape et ses photos ?"
+    texteSupprimer: "Supprimer cette fiche et ses photos ?"
   });
 }
 
@@ -1305,6 +1284,26 @@ function initialiserConnexion() {
   });
 }
 
+// ---------------------------------------------------------------------
+//  Apparence : automatique (comme le téléphone), clair ou sombre
+// ---------------------------------------------------------------------
+const APPARENCES = { auto: "Automatique", clair: "Clair", sombre: "Sombre" };
+const themeInitial = document.documentElement.getAttribute("data-theme");
+
+function appliquerApparence(choix) {
+  const racine = document.documentElement;
+  if (choix === "clair") racine.setAttribute("data-theme", "light");
+  else if (choix === "sombre") racine.setAttribute("data-theme", "dark");
+  else if (themeInitial) racine.setAttribute("data-theme", themeInitial);
+  else racine.removeAttribute("data-theme");
+  stockageEcrire("apparence-actuelle", choix);
+  const sombre = choix === "sombre" ||
+    (choix === "auto" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute("content", sombre ? "#0f1012" : "#f2f2f5");
+}
+const apparenceDuProfil = () => stockageLire("apparence-" + profilCourant()) || "auto";
+
 function ouvrirCompte() {
   const dlg = $("#modale");
   dlg.replaceChildren(h("div", { class: "formulaire" },
@@ -1314,6 +1313,27 @@ function ouvrirCompte() {
     ),
     h("div", { class: "formulaire-corps" },
       h("p", {}, "Connecté en tant que ", h("strong", {}, profilCourant())),
+      h("div", { class: "champ" },
+        h("span", { class: "label" }, "Apparence"),
+        (() => {
+          const choix = h("div", { class: "sous-onglets", role: "radiogroup", "aria-label": "Apparence" });
+          const dessiner = () => {
+            const actuel = apparenceDuProfil();
+            choix.replaceChildren(...Object.entries(APPARENCES).map(([cle, lib]) =>
+              h("button", {
+                type: "button", class: cle === actuel ? "actif" : "", role: "radio", "aria-checked": cle === actuel ? "true" : "false",
+                onclick: () => {
+                  stockageEcrire("apparence-" + profilCourant(), cle);
+                  appliquerApparence(cle);
+                  dessiner();
+                }
+              }, lib)));
+          };
+          dessiner();
+          return choix;
+        })(),
+        h("small", { class: "aide" }, "« Automatique » suit le réglage du téléphone. Ce choix est mémorisé pour votre profil sur cet appareil.")
+      ),
       h("p", { class: "discret" }, "Les données sont partagées en temps réel avec toute la famille et restent consultables hors connexion sur ce téléphone.")
     ),
     h("div", { class: "formulaire-pied" },
@@ -1376,6 +1396,14 @@ function demarrer() {
   $("#fab").addEventListener("click", () => (VUES[etat.route] || VUES.depenses).ajouter());
   $("#btn-compte").addEventListener("click", ouvrirCompte);
 
+  // Apparence : dernier choix utilisé sur cet appareil (avant même la connexion)
+  appliquerApparence(stockageLire("apparence-actuelle") || "auto");
+  if (window.matchMedia) {
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+      appliquerApparence(stockageLire("apparence-actuelle") || "auto");
+    });
+  }
+
   // Masquer les secrets dès que l'application passe en arrière-plan
   document.addEventListener("visibilitychange", () => {
     if (document.hidden && etat.reveles.size) { etat.reveles.clear(); afficher(); }
@@ -1399,6 +1427,7 @@ function demarrer() {
   initialiserConnexion();
   onAuthStateChanged(auth, (utilisateur) => {
     if (utilisateur) {
+      appliquerApparence(apparenceDuProfil());
       montrerEcran("app");
       bandeauInstallation();
       abonner();

@@ -12,7 +12,8 @@
   --bordure: #e3e3e8;
   --segment: #e4e4e9;
   --bouton-gris: #e3e3e8;
-  --nav-fond: rgba(249, 249, 251, .94);
+  --nav-fond: #ffffff;
+  --nav-ombre: rgba(0, 0, 0, .08);
   --toast: #2c2c2e;
   --danger: #c0392b;
   --succes: #3d5a73;
@@ -37,7 +38,8 @@
     --bordure: #2e2e31;
     --segment: #26262a;
     --bouton-gris: #2c2c2f;
-    --nav-fond: rgba(22, 22, 24, .94);
+    --nav-fond: #1c1c1e;
+  --nav-ombre: rgba(0, 0, 0, .5);
     --toast: #3a3a3d;
     --danger: #ff6b5e;
     --succes: #9bb7cf;
@@ -59,7 +61,8 @@
   --bordure: #2e2e31;
   --segment: #26262a;
   --bouton-gris: #2c2c2f;
-  --nav-fond: rgba(22, 22, 24, .94);
+  --nav-fond: #1c1c1e;
+  --nav-ombre: rgba(0, 0, 0, .5);
   --toast: #3a3a3d;
   --danger: #ff6b5e;
   --succes: #9bb7cf;
@@ -222,14 +225,18 @@ button { font: inherit; color: inherit; }
   height: calc(var(--nav-h) + env(safe-area-inset-bottom));
   padding-bottom: env(safe-area-inset-bottom);
   background: var(--nav-fond); border-top: 1px solid var(--bordure);
-  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  box-shadow: 0 -4px 16px var(--nav-ombre);
 }
 .onglets button {
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
   border: none; background: none; font-size: 11px; color: var(--discret); cursor: pointer;
 }
-.onglets button .ico { width: 24px; height: 24px; }
-.onglets button.actif { color: var(--primaire); font-weight: 600; }
+.onglets button .ico {
+  width: 56px; height: 30px; padding: 4px 16px; border-radius: 99px;
+  transition: background .15s, color .15s;
+}
+.onglets button.actif { color: var(--texte); font-weight: 600; }
+.onglets button.actif .ico { background: var(--primaire-clair); color: var(--primaire); }
 
 /* ---------- Sous-onglets ---------- */
 .sous-onglets { display: flex; gap: 4px; background: var(--segment); padding: 3px; border-radius: 10px; }
@@ -364,23 +371,10 @@ img.en-chargement { background: var(--primaire-clair); min-height: 60px; animati
 }
 
 /* ---------- Procédures ---------- */
-.progression { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--discret); }
-.progression .barre { flex: 1; height: 6px; background: var(--bordure); border-radius: 99px; overflow: hidden; }
-.progression .barre div { height: 100%; background: var(--succes); transition: width .25s; }
 .etape { padding: 12px 14px; }
 .etape-entete { display: flex; align-items: center; gap: 12px; }
-.etape-entete h3 { flex: 1; font-size: 17px; }
+.etape-entete h3 { flex: 1; font-size: 17px; min-width: 0; }
 .etape-outils { display: flex; }
-.case {
-  width: 36px; height: 36px; flex: none; border-radius: 50%;
-  display: inline-flex; align-items: center; justify-content: center;
-  border: 2px solid var(--primaire); background: var(--carte); color: var(--primaire);
-  font-weight: 700; cursor: pointer;
-}
-.case.cochee { background: var(--succes); border-color: var(--succes); color: var(--sur-primaire); }
-.case .ico { stroke-width: 2.4; }
-.case.repere { border: none; background: var(--primaire-clair); border-radius: 8px; cursor: default; }
-.etape.faite h3, .etape.faite .etape-description { color: var(--discret); text-decoration: line-through; }
 .etape-description { white-space: pre-line; margin: 10px 0 0; }
 .etape-photos { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
 .etape-photos figure { margin: 0; }
