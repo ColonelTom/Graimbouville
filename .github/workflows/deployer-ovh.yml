@@ -11,6 +11,12 @@ on:
     branches: [main]
     paths: ["site/**", ".github/workflows/deployer-ovh.yml"]
   workflow_dispatch:
+    inputs:
+      mode:
+        description: "inspecter = lister les dossiers OVH sans rien modifier ; deployer = envoyer les fichiers"
+        type: choice
+        options: [inspecter, deployer]
+        default: inspecter
 
 permissions:
   contents: read
@@ -26,8 +32,10 @@ jobs:
       FTP_SERVEUR: ${{ secrets.FTP_SERVEUR }}
       FTP_UTILISATEUR: ${{ secrets.FTP_UTILISATEUR }}
       LFTP_PASSWORD: ${{ secrets.FTP_MOT_DE_PASSE }}
-      # Dossier de destination sur OVH (modifiable via une « variable » GitHub FTP_DOSSIER)
-      FTP_DOSSIER: ${{ vars.FTP_DOSSIER || 'www/graimbouville' }}
+      # Dossier de destination sur OVH : variable GitHub FTP_DOSSIER, OBLIGATOIRE pour envoyer.
+      # Tant qu'elle n'est pas définie, rien n'est envoyé (pas de valeur par défaut).
+      FTP_DOSSIER: ${{ vars.FTP_DOSSIER }}
+      MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || 'deployer' }}
     steps:
       - name: Récupérer le code
         uses: actions/checkout@v4
@@ -45,6 +53,16 @@ jobs:
             echo "pret=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
+          echo "Mode : $MODE"
+          if [ "$MODE" = "inspecter" ]; then
+            echo "pret=inspecter" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ -z "$FTP_DOSSIER" ]; then
+            echo "::notice::Envoi ignoré : la variable GitHub FTP_DOSSIER (dossier de destination vérifié) n'est pas encore définie."
+            echo "pret=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           # Garde-fou : on n'écrit QUE dans un dossier « graimbouville »,
           # pour ne jamais toucher au reste du site motdefi.fr.
           case "$FTP_DOSSIER" in
@@ -54,8 +72,22 @@ jobs:
           echo "pret=true" >> "$GITHUB_OUTPUT"
 
       - name: Installer le client FTP
-        if: steps.verif.outputs.pret == 'true'
+        if: steps.verif.outputs.pret == 'true' || steps.verif.outputs.pret == 'inspecter'
         run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+
+      - name: Inspecter les dossiers OVH (lecture seule)
+        if: steps.verif.outputs.pret == 'inspecter'
+        run: |
+          lftp -u "$FTP_UTILISATEUR" --env-password "ftp://$FTP_SERVEUR" -e "
+            set ftp:ssl-force yes;
+            set ftp:ssl-protect-data yes;
+            set net:max-retries 2;
+            set net:timeout 30;
+            echo '=== Dossier d arrivee apres connexion :'; pwd;
+            echo '=== Contenu :'; cls -1 --classify;
+            echo '=== Contenu de www (s il existe) :'; cls -1 --classify www/;
+            echo '=== Contenu de www/motdefi (s il existe) :'; cls -1 --classify www/motdefi/;
+            bye" || true
 
       - name: Envoyer les fichiers sur OVH
         if: steps.verif.outputs.pret == 'true'
