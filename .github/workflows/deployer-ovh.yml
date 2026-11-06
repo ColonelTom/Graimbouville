@@ -71,16 +71,20 @@ jobs:
           esac
           echo "pret=true" >> "$GITHUB_OUTPUT"
 
-      - name: Installer le client FTP
+      - name: Installer le client et reconnaître le serveur OVH
         if: steps.verif.outputs.pret == 'true' || steps.verif.outputs.pret == 'inspecter'
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+        # Connexion SFTP (chiffrée). La clé du serveur OVH est enregistrée pour
+        # vérifier ensuite qu'on parle bien à lui.
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          ssh-keyscan -T 15 "$FTP_SERVEUR" >> ~/.ssh/known_hosts 2>/dev/null
+          echo "Empreintes du serveur :"; ssh-keygen -lf ~/.ssh/known_hosts || echo "::warning::Impossible de lire la clé SFTP du serveur (port 22 fermé ?)"
 
       - name: Inspecter les dossiers OVH (lecture seule)
         if: steps.verif.outputs.pret == 'inspecter'
         run: |
-          lftp -u "$FTP_UTILISATEUR" --env-password "ftp://$FTP_SERVEUR" -e "
-            set ftp:ssl-force yes;
-            set ftp:ssl-protect-data yes;
+          lftp -u "$FTP_UTILISATEUR" --env-password "sftp://$FTP_SERVEUR" -e "
             set net:max-retries 2;
             set net:timeout 30;
             echo '=== Dossier d arrivee apres connexion :'; pwd;
@@ -91,11 +95,9 @@ jobs:
 
       - name: Envoyer les fichiers sur OVH
         if: steps.verif.outputs.pret == 'true'
-        # Connexion chiffrée (FTP sur TLS) avec vérification du certificat d'OVH.
+        # Connexion chiffrée SFTP, serveur vérifié par sa clé.
         run: |
-          lftp -u "$FTP_UTILISATEUR" --env-password "ftp://$FTP_SERVEUR" -e "
-            set ftp:ssl-force yes;
-            set ftp:ssl-protect-data yes;
+          lftp -u "$FTP_UTILISATEUR" --env-password "sftp://$FTP_SERVEUR" -e "
             set net:max-retries 2;
             set net:timeout 30;
             mirror --reverse --verbose --exclude-glob .DS_Store site/ '$FTP_DOSSIER';
