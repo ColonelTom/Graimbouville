@@ -36,9 +36,11 @@ jobs:
       FTP_SERVEUR: ${{ secrets.FTP_SERVEUR }}
       FTP_UTILISATEUR: ${{ secrets.FTP_UTILISATEUR }}
       LFTP_PASSWORD: ${{ secrets.FTP_MOT_DE_PASSE }}
-      # Dossier de destination sur OVH : en cours de vérification (« www » n'est PAS
-      # la racine de motdefi.fr). Aucun envoi tant qu'il n'est pas confirmé.
-      FTP_DOSSIER: ${{ vars.FTP_DOSSIER }}
+      # Dossier de destination sur OVH, vérifié le 6/11/2026 par inspection :
+      # le dossier « motdefi » est la racine de https://motdefi.fr/ (ses fichiers
+      # badge-appstore.svg, aide.php… y sont servis ; « www » sert un autre site).
+      # Donc motdefi/graimbouville = https://motdefi.fr/graimbouville/
+      FTP_DOSSIER: ${{ vars.FTP_DOSSIER || 'motdefi/graimbouville' }}
       MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || 'deployer' }}
     steps:
       - name: Récupérer le code
