@@ -32,9 +32,11 @@ jobs:
       FTP_SERVEUR: ${{ secrets.FTP_SERVEUR }}
       FTP_UTILISATEUR: ${{ secrets.FTP_UTILISATEUR }}
       LFTP_PASSWORD: ${{ secrets.FTP_MOT_DE_PASSE }}
-      # Dossier de destination sur OVH : variable GitHub FTP_DOSSIER, OBLIGATOIRE pour envoyer.
-      # Tant qu'elle n'est pas définie, rien n'est envoyé (pas de valeur par défaut).
-      FTP_DOSSIER: ${{ vars.FTP_DOSSIER }}
+      # Dossier de destination sur OVH, vérifié le 6/11/2026 par une inspection :
+      # « www » est la racine de motdefi.fr (on y trouve japon/, napoleon/…),
+      # donc www/graimbouville = https://motdefi.fr/graimbouville/
+      # (peut être remplacé par une variable GitHub FTP_DOSSIER).
+      FTP_DOSSIER: ${{ vars.FTP_DOSSIER || 'www/graimbouville' }}
       MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || 'deployer' }}
     steps:
       - name: Récupérer le code
