@@ -17,6 +17,10 @@ on:
         type: choice
         options: [inspecter, deployer]
         default: inspecter
+      chemin:
+        description: "Mode inspecter : dossier supplémentaire à lister (lecture seule)"
+        type: string
+        default: ""
 
 permissions:
   contents: read
@@ -32,11 +36,9 @@ jobs:
       FTP_SERVEUR: ${{ secrets.FTP_SERVEUR }}
       FTP_UTILISATEUR: ${{ secrets.FTP_UTILISATEUR }}
       LFTP_PASSWORD: ${{ secrets.FTP_MOT_DE_PASSE }}
-      # Dossier de destination sur OVH, vérifié le 6/11/2026 par une inspection :
-      # « www » est la racine de motdefi.fr (on y trouve japon/, napoleon/…),
-      # donc www/graimbouville = https://motdefi.fr/graimbouville/
-      # (peut être remplacé par une variable GitHub FTP_DOSSIER).
-      FTP_DOSSIER: ${{ vars.FTP_DOSSIER || 'www/graimbouville' }}
+      # Dossier de destination sur OVH : en cours de vérification (« www » n'est PAS
+      # la racine de motdefi.fr). Aucun envoi tant qu'il n'est pas confirmé.
+      FTP_DOSSIER: ${{ vars.FTP_DOSSIER }}
       MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || 'deployer' }}
     steps:
       - name: Récupérer le code
@@ -85,6 +87,8 @@ jobs:
 
       - name: Inspecter les dossiers OVH (lecture seule)
         if: steps.verif.outputs.pret == 'inspecter'
+        env:
+          CHEMIN: ${{ inputs.chemin }}
         run: |
           lftp -u "$FTP_UTILISATEUR" --env-password "sftp://$FTP_SERVEUR" -e "
             set net:max-retries 2;
@@ -92,8 +96,13 @@ jobs:
             echo '=== Dossier d arrivee apres connexion :'; pwd;
             echo '=== Contenu :'; cls -1 --classify;
             echo '=== Contenu de www (s il existe) :'; cls -1 --classify www/;
-            echo '=== Contenu de www/motdefi (s il existe) :'; cls -1 --classify www/motdefi/;
             bye" || true
+          if [ -n "$CHEMIN" ]; then
+            lftp -u "$FTP_UTILISATEUR" --env-password "sftp://$FTP_SERVEUR" -e "
+              set net:timeout 30;
+              echo '=== Contenu de $CHEMIN :'; cls -1 --classify '$CHEMIN/';
+              bye" || true
+          fi
 
       - name: Envoyer les fichiers sur OVH
         if: steps.verif.outputs.pret == 'true'
