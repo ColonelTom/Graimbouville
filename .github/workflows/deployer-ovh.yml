@@ -1,0 +1,80 @@
+# =====================================================================
+#  Envoie automatiquement le dossier site/ sur l'hébergement OVH
+#  (https://motdefi.fr/graimbouville/) à chaque mise à jour de la branche main.
+#  Les accès FTP sont lus dans les « secrets » GitHub du dépôt :
+#  FTP_SERVEUR, FTP_UTILISATEUR, FTP_MOT_DE_PASSE (jamais écrits dans le code).
+# =====================================================================
+name: Déployer sur OVH
+
+on:
+  push:
+    branches: [main]
+    paths: ["site/**", ".github/workflows/deployer-ovh.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploiement-ovh
+  cancel-in-progress: false
+
+jobs:
+  deployer:
+    runs-on: ubuntu-latest
+    env:
+      FTP_SERVEUR: ${{ secrets.FTP_SERVEUR }}
+      FTP_UTILISATEUR: ${{ secrets.FTP_UTILISATEUR }}
+      LFTP_PASSWORD: ${{ secrets.FTP_MOT_DE_PASSE }}
+      # Dossier de destination sur OVH (modifiable via une « variable » GitHub FTP_DOSSIER)
+      FTP_DOSSIER: ${{ vars.FTP_DOSSIER || 'www/graimbouville' }}
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Vérifier que les accès FTP sont renseignés
+        id: verif
+        run: |
+          manque=""
+          [ -z "$FTP_SERVEUR" ] && manque="$manque FTP_SERVEUR"
+          [ -z "$FTP_UTILISATEUR" ] && manque="$manque FTP_UTILISATEUR"
+          [ -z "$LFTP_PASSWORD" ] && manque="$manque FTP_MOT_DE_PASSE"
+          if [ -n "$manque" ]; then
+            # Pas encore configuré : on n'échoue pas, on prévient simplement.
+            echo "::notice::Déploiement ignoré, secrets GitHub manquants :$manque (Settings > Secrets and variables > Actions)"
+            echo "pret=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # Garde-fou : on n'écrit QUE dans un dossier « graimbouville »,
+          # pour ne jamais toucher au reste du site motdefi.fr.
+          case "$FTP_DOSSIER" in
+            *graimbouville|*graimbouville/) ;;
+            *) echo "::error::Le dossier de destination doit se terminer par « graimbouville » (actuel : $FTP_DOSSIER)"; exit 1 ;;
+          esac
+          echo "pret=true" >> "$GITHUB_OUTPUT"
+
+      - name: Installer le client FTP
+        if: steps.verif.outputs.pret == 'true'
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+
+      - name: Envoyer les fichiers sur OVH
+        if: steps.verif.outputs.pret == 'true'
+        # Connexion chiffrée (FTP sur TLS) avec vérification du certificat d'OVH.
+        run: |
+          lftp -u "$FTP_UTILISATEUR" --env-password "ftp://$FTP_SERVEUR" -e "
+            set ftp:ssl-force yes;
+            set ftp:ssl-protect-data yes;
+            set net:max-retries 2;
+            set net:timeout 30;
+            mirror --reverse --verbose --exclude-glob .DS_Store site/ '$FTP_DOSSIER';
+            bye"
+
+      - name: Vérifier que le site répond
+        if: steps.verif.outputs.pret == 'true'
+        run: |
+          sleep 5
+          code=$(curl -s -o /dev/null -w '%{http_code}' https://motdefi.fr/graimbouville/)
+          echo "https://motdefi.fr/graimbouville/ répond : $code"
+          if [ "$code" != "200" ]; then
+            echo "::warning::Le site ne répond pas encore 200 : vérifiez le dossier racine de motdefi.fr dans OVH > Multisite."
+          fi

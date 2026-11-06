@@ -3,15 +3,16 @@
 //  -> C'est le SEUL fichier à modifier (voir le guide README.md, étape 5).
 // =====================================================================
 
-// 1) Collez ici la configuration donnée par Firebase
+// 1) Configuration du projet Firebase « graimbouville » (non secrète : elle identifie
+//    seulement le projet ; les données sont protégées par la connexion et les règles)
 //    (Console Firebase > ⚙️ Paramètres du projet > Vos applications > Config)
 export const firebaseConfig = {
-  apiKey: "A_REMPLACER",
-  authDomain: "A_REMPLACER.firebaseapp.com",
-  projectId: "A_REMPLACER",
-  storageBucket: "A_REMPLACER.appspot.com",
-  messagingSenderId: "A_REMPLACER",
-  appId: "A_REMPLACER"
+  apiKey: "AIzaSyAgkwpmrV0GZzzzwJ5BJMP_MyG3bhcRgiE",
+  authDomain: "graimbouville.firebaseapp.com",
+  projectId: "graimbouville",
+  storageBucket: "graimbouville.firebasestorage.app",
+  messagingSenderId: "295979794514",
+  appId: "1:295979794514:web:d718f8fad4bfe33f5e9f8b"
 };
 
 // 2) Les profils proposés sur l'écran de connexion.
